@@ -65,4 +65,43 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
                 "Error creating new category record!");
         }
     }
+    
+    [HttpPut]
+    public async Task<ActionResult<CategoryDto>> UpdateCategory([FromBody]CategoryDto categoryDto)
+    {
+        try
+        {
+            if (categoryDto == null)
+                return BadRequest();
+
+            var updatedCategory = await logic.UpdateCategoryAsync(categoryDto);
+
+            if (updatedCategory == null) return NotFound($"Category with name {categoryDto.Name} was not found");
+
+            return updatedCategory;
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error updating new category record!");
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteCategory(int id)
+    {
+        try
+        {
+            if (id == null)
+                return BadRequest();
+
+            await logic.DeleteCategoryAsync(id);
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting category record!");
+        }
+    }
 }

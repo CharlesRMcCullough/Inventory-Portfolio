@@ -51,19 +51,15 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
         var response = await context.Category.Where(p => p.Id == categoryDto.Id)
             .FirstOrDefaultAsync();
 
-        if (response != null)
-        {
-            response.Name = categoryDto.Name;
-            response.Status = categoryDto.Status;
-            response.Description = categoryDto.Description;;
-
-            var createdCategory = await context.SaveChangesAsync();
-
-
-            return mapper.Map<CategoryDto>(createdCategory);
-        }
-
-        return null;
+        if (response == null) return null;
+        
+        response.Name = categoryDto.Name;
+        response.Description = categoryDto.Description;;
+        response.Status = categoryDto.Status;
+        
+        var createdCategory = await context.SaveChangesAsync();
+        
+        return mapper.Map<CategoryDto>(createdCategory);
     }
     public async Task DeleteCategoryAsync(int id)
     {
@@ -73,6 +69,7 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
         if (response != null)
         {
             context.Category.Remove(response);
+            await context.SaveChangesAsync();
         }
     }
 }

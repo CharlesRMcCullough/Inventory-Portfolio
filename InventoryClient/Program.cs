@@ -1,14 +1,18 @@
 using MudBlazor.Services;
 using InventoryClient.Components;
+using InventoryClient.Integrations;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add MudBlazor services
 builder.Services.AddMudServices();
+builder.Services.AddMudServices();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddScoped<ICategoryIntegration, CategoryIntegration>();
 
 var app = builder.Build();
 

@@ -1,0 +1,42 @@
+@page "/CategoryEdit/{id:int}/{mode:int}"
+@using InventoryClient.Integrations
+
+@inject NavigationManager Navigation
+@inject ICategoryIntegration Integration
+
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h5" GutterBottom="true">Category:</MudText>
+    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator/>
+        <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Name" HelperText="Category Name" HelperTextOnFocus="true"
+                                @bind-Value="model.Name" Disabled=@IsDisabled For="@(() => model.Name)"/>
+                    <MudTextField Label="Description" Disabled=@IsDisabled HelperText="Category Description" HelperTextOnFocus="true"
+                                Class="mt-3" @bind-Value="model.Description" For="@(() => model.Description)"/>
+                    <MudSelect @bind-Value="model.Status"
+                               Label="Status"
+                               Disabled="IsDisabled"
+                               HelperText="Status of Category"
+                               HelperTextOnFocus="true">
+
+                        <MudSelectItem Value="true">Enabled</MudSelectItem>
+                        <MudSelectItem Value="false">Disable</MudSelectItem>
+
+                    </MudSelect>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
+                        Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>
+                    @if (!IsView) {
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
+                    }
+
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        </MudGrid>
+        </EditForm>
+</MudContainer>
