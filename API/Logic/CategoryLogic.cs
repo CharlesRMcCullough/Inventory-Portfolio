@@ -38,12 +38,12 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
     
     public async Task<CategoryDto> CreateCategoryAsync(CategoryDto categoryDto)
     {
-        var newCategory = mapper.Map<Category>(categoryDto);
+
+        var recordToCreate = mapper.Map<Category>(categoryDto);
+        var result = await context.Category.AddAsync(recordToCreate);
+        await context.SaveChangesAsync();
         
-        context.Add(newCategory);
-        var result = await context.SaveChangesAsync();
-        
-        return mapper.Map<CategoryDto>(result);
+        return mapper.Map<CategoryDto>(result.Entity);
     }
     
     public async Task<CategoryDto?> UpdateCategoryAsync(CategoryDto categoryDto)
@@ -53,6 +53,7 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
 
         if (response == null) return null;
         
+        response.Id = categoryDto.Id;
         response.Name = categoryDto.Name;
         response.Description = categoryDto.Description;;
         response.Status = categoryDto.Status;

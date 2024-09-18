@@ -47,7 +47,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody]CategoryDto categoryDto)
+    public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody]CategoryDto? categoryDto)
     {
         try
         {
@@ -67,7 +67,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
     }
     
     [HttpPut]
-    public async Task<ActionResult<CategoryDto>> UpdateCategory([FromBody]CategoryDto categoryDto)
+    public async Task<ActionResult<CategoryDto>> UpdateCategory([FromBody]CategoryDto? categoryDto)
     {
         try
         {
@@ -92,8 +92,8 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
     {
         try
         {
-            if (id == null)
-                return BadRequest();
+            // if (id == null)
+            //     return BadRequest();
 
             await logic.DeleteCategoryAsync(id);
             return NoContent();

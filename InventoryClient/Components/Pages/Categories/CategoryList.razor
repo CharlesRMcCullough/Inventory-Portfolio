@@ -1,0 +1,35 @@
+@page "/Categories"
+@inject NavigationManager Navigation
+@inject ICategoryIntegration Integration
+@inject IDialogService DialogService
+@using InventoryClient.Integrations
+
+
+<PageTitle>Categories</PageTitle>
+
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h4" GutterBottom="true">Categories</MudText>
+    <MudGrid Spacing="12" Class="mt-4">
+        <MudItem xs="10">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="ml-auto mb-5"  OnClick="OnAdd">Add Category</MudButton>
+                    <MudDataGrid Items="@_categories">
+                        <Columns>
+                            <PropertyColumn Property="x => x.Name" Title="Name"/>
+                            <PropertyColumn Property="x => x.Description" Title="Description"/>
+                            <TemplateColumn CellClass="d-flex justify-end">
+                                <CellTemplate>
+                                    <MudIconButton Size="@Size.Small" Class="mr-3" Icon="@Icons.Material.Outlined.Visibility" OnClick="() => OnView(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="() => OnEdit(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="(async () => await OnDeleteAsync(context.Item.Id))"/>
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                    </MudDataGrid>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+    @* <MudButton Color="Color.Success" @onclick="@(() => Snackbar.Add("The reactor is running at optimum temperature", Severity.Success))">Success Snackbar</MudButton> *@
+    </MudContainer>

@@ -6,17 +6,16 @@ namespace InventoryClient.Components.Pages.Categories;
 
 public partial class CategoryEdit : ComponentBase
 {
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
-    [Parameter]
-    public int Mode { get; set; }
+    [Parameter] public int Mode { get; set; }
 
     private bool IsView => Mode == 0 ? true : false;
-    private bool IsAdd => Mode == 3 ? true : false;
+    private bool IsAdd => Mode == 2 ? true : false;
     private bool IsDisabled => Mode == 0 ? true : false;
-    
+
     private CategoryListViewModel model = new();
+    private string _categoryPrompt = string.Empty;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -28,19 +27,23 @@ public partial class CategoryEdit : ComponentBase
             model.Description = category.Description;
             model.Status = category.Status;
         }
+        
+        _categoryPrompt = IsAdd ? "Category Add" : $"Category: {model.Name}";
     }
 
     private async Task OnValidSubmit(EditContext context)
     {
         if (IsAdd)
         {
-            var response = await Integration.CreateCategoryAsync(model);
+            model.Id = 0;
+            await Integration.CreateCategoryAsync(model);
+            Navigation.NavigateTo("/categories");
         }
         else
         {
-            var response = await Integration.UpdateCategoryAsync(model);
+            await Integration.UpdateCategoryAsync(model);
         }
-        
+
         Navigation.NavigateTo("/Categories");
     }
 
