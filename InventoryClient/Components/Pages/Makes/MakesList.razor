@@ -1,0 +1,37 @@
+@page "/Makes"
+@inject NavigationManager Navigation
+@inject IMakeIntegration Integration
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+@using InventoryClient.Integrations
+
+<PageTitle>Categories</PageTitle>
+
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h4" GutterBottom="true">Makes</MudText>
+    <MudGrid Spacing="12" Class="mt-4">
+        <MudItem xs="10">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto"  OnClick="OnAdd">Add Make</MudButton>
+                    <MudDataGrid Items="@_makes">
+                        <Columns>
+                            <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
+                            <PropertyColumn Property="x => x.Description" Title="Description"/>
+                            <TemplateColumn CellClass="d-flex justify-end">
+                                <CellTemplate>
+                                    <MudIconButton Size="@Size.Small" Class="mr-3" Icon="@Icons.Material.Outlined.Visibility" OnClick="() => OnView(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="() => OnEdit(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="(async () => await OnDeleteAsync(context.Item.Id))"/>
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                    </MudDataGrid>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+    <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
+        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    </MudOverlay>
+    </MudContainer>

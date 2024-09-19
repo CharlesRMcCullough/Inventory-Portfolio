@@ -17,11 +17,11 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, 
+            return StatusCode(StatusCodes.Status500InternalServerError,
                 "Error retrieving Categories from the database");
         }
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CategoryDto?>> GetCategoryById(int id)
     {
@@ -36,18 +36,26 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving data from the database");
+                "Error retrieving category from the database");
         }
     }
-    
+
     [HttpGet("dropdowns")]
     public async Task<ActionResult<List<DropdownDto>>> GetCategoryDropdownList()
     {
-        return await logic.GetCategoriesForDropdownAsync();
+        try
+        {
+            return await logic.GetCategoriesForDropdownAsync();
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error retrieving category from the database");
+        }
     }
-    
+
     [HttpPost]
-    public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody]CategoryDto? categoryDto)
+    public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody] CategoryDto? categoryDto)
     {
         try
         {
@@ -65,9 +73,9 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
                 "Error creating new category record!");
         }
     }
-    
+
     [HttpPut]
-    public async Task<ActionResult<CategoryDto>> UpdateCategory([FromBody]CategoryDto? categoryDto)
+    public async Task<ActionResult<CategoryDto>> UpdateCategory([FromBody] CategoryDto? categoryDto)
     {
         try
         {
@@ -83,7 +91,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error updating new category record!");
+                "Error updating category record!");
         }
     }
 

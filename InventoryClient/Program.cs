@@ -12,6 +12,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 builder.Services.AddScoped<ICategoryIntegration, CategoryIntegration>();
+builder.Services.AddScoped<IMakeIntegration, MakeIntegration>();
 
 var app = builder.Build();
 

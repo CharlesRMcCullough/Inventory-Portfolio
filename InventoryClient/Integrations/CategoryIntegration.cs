@@ -20,6 +20,8 @@ public class CategoryIntegration : ICategoryIntegration
     {
         BaseAddress = new Uri("http://localhost:7001")
     };
+
+        private const string ApiBase = "/api/categories";
     
     public async Task<IEnumerable<CategoryListViewModel>> GetCategoriesAsync()
     {

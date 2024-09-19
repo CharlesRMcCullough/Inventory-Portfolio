@@ -15,6 +15,8 @@ public class MappingProfiles : Profile
         CreateMap<Model, ProductDto>();
         CreateMap<Category, CategoryDto>();
         CreateMap<CategoryDto, Category>();
+        CreateMap<MakeDto, Make>();
+        CreateMap<Make, MakeDto>();
 
     }
     

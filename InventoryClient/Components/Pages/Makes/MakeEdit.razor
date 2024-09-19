@@ -1,0 +1,47 @@
+@page "/MakeEdit/{id:int}/{mode:int}"
+@using InventoryClient.Integrations
+@inject NavigationManager Navigation
+@inject IMakeIntegration Integration
+@inject ISnackbar Snackbar
+
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h5" GutterBottom="true">@_makePrompt</MudText>
+    <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator/>
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="Name" HelperText="Make Name" HelperTextOnFocus="true"
+                                      @bind-Value="_model.Name" Disabled=@IsView For="@(() => _model.Name)"/>
+                        <MudTextField Label="Description" Disabled=@IsView HelperText="Make Description" HelperTextOnFocus="true"
+                                      Class="mt-3 mb-5" @bind-Value="_model.Description" For="@(() => _model.Description)"/>
+                        @if (!IsAdd)
+                        {
+                            <MudSelect @bind-Value="_model.Status"
+                                       Label="Status"
+                                       Disabled="IsAdd || IsView"
+                                       HelperText="Status of Category"
+                                       HelperTextOnFocus="true">
+
+                                <MudSelectItem Value="true">Enabled</MudSelectItem>
+                                <MudSelectItem Value="false">Disable</MudSelectItem>
+                            </MudSelect>
+                        }
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
+                                   Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>
+                        @if (!IsView) {
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
+                        }
+
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+    <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
+        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    </MudOverlay>
+</MudContainer>

@@ -1,5 +1,6 @@
 using API.Data;
 using API.Logic;
+using API.Logic.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<InventoryDbContext>(opt =>
 });
 builder.Services.AddScoped<IProductLogic, ProductLogic>();
 builder.Services.AddScoped<ICategoryLogic, CategoryLogic>();
+builder.Services.AddScoped<IMakeLogic, MakeLogic>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
