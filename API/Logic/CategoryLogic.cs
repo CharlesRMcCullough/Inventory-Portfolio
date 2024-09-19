@@ -58,9 +58,9 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
         response.Description = categoryDto.Description;;
         response.Status = categoryDto.Status;
         
-        var createdCategory = await context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         
-        return mapper.Map<CategoryDto>(createdCategory);
+        return mapper.Map<CategoryDto>(response);
     }
     public async Task DeleteCategoryAsync(int id)
     {

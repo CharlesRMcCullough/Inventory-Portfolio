@@ -92,9 +92,6 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
     {
         try
         {
-            // if (id == null)
-            //     return BadRequest();
-
             await logic.DeleteCategoryAsync(id);
             return NoContent();
         }

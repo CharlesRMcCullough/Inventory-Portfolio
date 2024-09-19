@@ -7,6 +7,7 @@ namespace InventoryClient.Components.Pages.Categories;
 public partial class CategoryList : ComponentBase
 {
     private IEnumerable<CategoryListViewModel> _categories = new List<CategoryListViewModel>();
+    private bool _isLoading = false;
     
     protected override async Task OnInitializedAsync()
     {
@@ -28,18 +29,33 @@ public partial class CategoryList : ComponentBase
         };
 
         var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
-        
+
         var dialogResult = await DialogService.ShowAsync<DeleteDialog>("Delete", parameters, options);
         var result = await dialogResult.Result;
 
         if (result is { Canceled: false })
         {
-            await Integration.DeleteCategoryAsync(id);
+            try
+            {
+                _isLoading = true;
+                await Integration.DeleteCategoryAsync(id);
+                Snackbar.Add("Delete successful!", Severity.Success);
+            }
+            catch (Exception e)
+            {
+                Snackbar.Add($"Error deleting category: {e.Message}", Severity.Error);
+            }
+            finally
+            {
+                _isLoading = false;
+            }
+            
         }
-        
+            
         await GetCategoriesAsync();
+
     }
-    
+
     private void OnView(int id)
     {
         Navigation.NavigateTo($"/CategoryEdit/{id}/0");
@@ -52,7 +68,19 @@ public partial class CategoryList : ComponentBase
 
     private async Task GetCategoriesAsync()
     {
-        _categories = await Integration.GetCategoriesAsync();
-        StateHasChanged();
+        try
+        {
+            _isLoading = true;
+            _categories = await Integration.GetCategoriesAsync();
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Unable to load categories! {e.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 }

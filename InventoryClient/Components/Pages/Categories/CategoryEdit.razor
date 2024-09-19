@@ -1,44 +1,48 @@
 @page "/CategoryEdit/{id:int}/{mode:int}"
 @using InventoryClient.Integrations
-
 @inject NavigationManager Navigation
 @inject ICategoryIntegration Integration
+@inject ISnackbar Snackbar
+
 
 <MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
     <MudText Typo="Typo.h5" GutterBottom="true">@_categoryPrompt</MudText>
-    <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+    <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator/>
         <MudGrid>
-        <MudItem xs="12" sm="7">
-            <MudCard>
-                <MudCardContent>
-                    <MudTextField Label="Name" HelperText="Category Name" HelperTextOnFocus="true"
-                                @bind-Value="model.Name" Disabled=@IsDisabled For="@(() => model.Name)"/>
-                    <MudTextField Label="Description" Disabled=@IsDisabled HelperText="Category Description" HelperTextOnFocus="true"
-                                  Class="mt-3 mb-5" @bind-Value="model.Description" For="@(() => model.Description)"/>
-                    @if (!IsAdd)
-                    {
-                        <MudSelect @bind-Value="model.Status"
-                                   Label="Status"
-                                   Disabled="IsDisabled"
-                                   HelperText="Status of Category"
-                                   HelperTextOnFocus="true">
+            <MudItem xs="12" sm="7">
+                <MudCard>
+                    <MudCardContent>
+                        <MudTextField Label="Name" HelperText="Category Name" HelperTextOnFocus="true"
+                                      @bind-Value="_model.Name" Disabled=@IsView For="@(() => _model.Name)"/>
+                        <MudTextField Label="Description" Disabled=@IsView HelperText="Category Description" HelperTextOnFocus="true"
+                                      Class="mt-3 mb-5" @bind-Value="_model.Description" For="@(() => _model.Description)"/>
+                        @if (!IsAdd)
+                        {
+                            <MudSelect @bind-Value="_model.Status"
+                                       Label="Status"
+                                       Disabled="IsAdd || IsView"
+                                       HelperText="Status of Category"
+                                       HelperTextOnFocus="true">
 
-                            <MudSelectItem Value="true">Enabled</MudSelectItem>
-                            <MudSelectItem Value="false">Disable</MudSelectItem>
-                        </MudSelect>
-                    }
-                </MudCardContent>
-                <MudCardActions>
-                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
-                        Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>
-                    @if (!IsView) {
-                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
-                    }
+                                <MudSelectItem Value="true">Enabled</MudSelectItem>
+                                <MudSelectItem Value="false">Disable</MudSelectItem>
+                            </MudSelect>
+                        }
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
+                                   Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>
+                        @if (!IsView) {
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
+                        }
 
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
         </MudGrid>
-        </EditForm>
+    </EditForm>
+    <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
+        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    </MudOverlay>
 </MudContainer>

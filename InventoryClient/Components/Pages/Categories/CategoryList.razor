@@ -2,8 +2,8 @@
 @inject NavigationManager Navigation
 @inject ICategoryIntegration Integration
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 @using InventoryClient.Integrations
-
 
 <PageTitle>Categories</PageTitle>
 
@@ -16,7 +16,7 @@
                     <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="ml-auto mb-5"  OnClick="OnAdd">Add Category</MudButton>
                     <MudDataGrid Items="@_categories">
                         <Columns>
-                            <PropertyColumn Property="x => x.Name" Title="Name"/>
+                            <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
                             <PropertyColumn Property="x => x.Description" Title="Description"/>
                             <TemplateColumn CellClass="d-flex justify-end">
                                 <CellTemplate>
@@ -31,5 +31,7 @@
             </MudGrid>
         </MudItem>
     </MudGrid>
-    @* <MudButton Color="Color.Success" @onclick="@(() => Snackbar.Add("The reactor is running at optimum temperature", Severity.Success))">Success Snackbar</MudButton> *@
+    <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
+        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    </MudOverlay>
     </MudContainer>
