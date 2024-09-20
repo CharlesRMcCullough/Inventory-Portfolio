@@ -1,34 +1,24 @@
-using System;
 using System.Text;
 using API.DTOs;
+using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
 using Newtonsoft.Json;
 
 namespace InventoryClient.Integrations;
 
-public interface IMakeIntegration
-{
-    Task<IEnumerable<MakeListViewModel>> GetMakesAsync();
-    Task<MakeListViewModel> GetMakeByIdAsync(int id);
-    Task<MakeListViewModel> CreateMakeAsync(MakeListViewModel makeToAdd);
-    Task<MakeListViewModel> UpdateMakeAsync(MakeListViewModel updatedMake);
-    Task DeleteMakeAsync(int id);
-}
-
-
 public class MakeIntegration : IMakeIntegration
 {
-        private const string ApiBase = "/api/makes";
-        private const string ApiUrl = "http://localhost:7001";
+    private const string ApiBase = "/api/makes";
+    private const string ApiUrl = "http://localhost:7001";
 
-     private static HttpClient _httpClient = new()
+    private static readonly HttpClient HttpClient = new()
     {
         BaseAddress = new Uri(ApiUrl)
     };
 
     public async Task<IEnumerable<MakeListViewModel>> GetMakesAsync()
     {
-        var response = await _httpClient.GetAsync(ApiBase);
+        var response = await HttpClient.GetAsync(ApiBase);
         var returnCategories = new List<MakeListViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -44,7 +34,7 @@ public class MakeIntegration : IMakeIntegration
 
     public async Task<MakeListViewModel> GetMakeByIdAsync(int id)
     {
-        var response = await _httpClient.GetAsync(ApiBase + $"/{id}");
+        var response = await HttpClient.GetAsync(ApiBase + $"/{id}");
         var returnMake = new MakeListViewModel();
         if (response.IsSuccessStatusCode)
         {
@@ -67,17 +57,18 @@ public class MakeIntegration : IMakeIntegration
             Description = updatedMake.Description,
             Status = Convert.ToByte(updatedMake.Status ? 1 : 0)
         };
-        
-        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(makeDto), Encoding.UTF8, "application/json");
-        
-        var response = await _httpClient.PutAsync(ApiBase, jsonContent);
-        
+
+        using StringContent jsonContent =
+            new StringContent(JsonConvert.SerializeObject(makeDto), Encoding.UTF8, "application/json");
+
+        var response = await HttpClient.PutAsync(ApiBase, jsonContent);
+
         var data = response.Content.ReadAsStringAsync().Result;
         var returnMake = JsonConvert.DeserializeObject<MakeListViewModel>(data);
-        
+
         return returnMake ?? new MakeListViewModel();
     }
-    
+
     public async Task<MakeListViewModel> CreateMakeAsync(MakeListViewModel makeToAdd)
     {
         var makeDto = new MakeDto()
@@ -87,19 +78,20 @@ public class MakeIntegration : IMakeIntegration
             Description = makeToAdd.Description,
             Status = Convert.ToByte(1)
         };
-        
-        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(makeDto), Encoding.UTF8, "application/json");
-        
-        var response = await _httpClient.PostAsync(ApiBase, jsonContent);
-        
+
+        using StringContent jsonContent =
+            new StringContent(JsonConvert.SerializeObject(makeDto), Encoding.UTF8, "application/json");
+
+        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+
         var data = response.Content.ReadAsStringAsync().Result;
         var returnMake = JsonConvert.DeserializeObject<MakeListViewModel>(data);
-        
+
         return returnMake ?? new MakeListViewModel();
     }
 
     public async Task DeleteMakeAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync(ApiBase + $"/{id}");
+        await HttpClient.DeleteAsync(ApiBase + $"/{id}");
     }
 }

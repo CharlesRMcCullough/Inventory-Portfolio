@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
-namespace InventoryClient.Components.Pages.Makes;
+namespace InventoryClient.Components.Pages.Models;
 
-public partial class MakeEdit : ComponentBase
+public partial class ModelEdit : ComponentBase
 {
     [Parameter] public int Id { get; set; }
 
@@ -14,22 +14,22 @@ public partial class MakeEdit : ComponentBase
     private bool IsView => Mode == 0;
     private bool IsAdd => Mode == 2;
 
-    private MakeListViewModel ViewModel { get; set; } = new MakeListViewModel();
-    private string _makePrompt = string.Empty;
-    private bool _isLoading = false;
+    private ModelListViewModel ViewModel { get; set; } = new ModelListViewModel();
+    private string _modelPrompt = string.Empty;
+    private bool _isLoading;
 
     protected override async Task OnParametersSetAsync()
     {
         if (!IsAdd)
         {
-            var make = await Integration.GetMakeByIdAsync(Id);
+            var make = await Integration.GetModelByIdAsync(Id);
             ViewModel.Id = make.Id;
             ViewModel.Name = make.Name;
             ViewModel.Description = make.Description;
             ViewModel.Status = make.Status;
         }
         
-        _makePrompt = IsAdd ? "Make Add" : $"Make: {ViewModel.Name}";
+        _modelPrompt = IsAdd ? "Model Add" : $"Model: {ViewModel.Name}";
     }
 
     private async Task OnValidSubmit(EditContext context)
@@ -43,7 +43,7 @@ public partial class MakeEdit : ComponentBase
             await UpdateMake();
         }
 
-        Navigation.NavigateTo("/Makes");
+        Navigation.NavigateTo("/Models");
     }
     
     private async Task UpdateMake()
@@ -51,11 +51,11 @@ public partial class MakeEdit : ComponentBase
         try
         {
             _isLoading = true;
-            await Integration.UpdateMakeAsync(ViewModel);
+            await Integration.UpdateModelAsync(ViewModel);
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Error updating make! {e.Message}", Severity.Error);
+            Snackbar.Add($"Error updating Model! {e.Message}", Severity.Error);
         }
         finally
         {
@@ -69,11 +69,11 @@ public partial class MakeEdit : ComponentBase
         {
             _isLoading = true;
             ViewModel.Id = 0;
-            await Integration.CreateMakeAsync(ViewModel);
+            await Integration.CreateModelAsync(ViewModel);
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Error creating make! {e.Message}", Severity.Error);
+            Snackbar.Add($"Error creating Model! {e.Message}", Severity.Error);
         }
         finally
         {
@@ -83,6 +83,6 @@ public partial class MakeEdit : ComponentBase
     
     private void OnCancel()
     {
-        Navigation.NavigateTo("/Makes");
+        Navigation.NavigateTo("/Models");
     }
 }

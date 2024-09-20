@@ -49,9 +49,8 @@ public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
     
     public async Task<MakeDto?> UpdateMakeAsync(MakeDto makeDto)
     {
-        var response = await context.Make.Where(p => p.Id == makeDto.Id)
-            .FirstOrDefaultAsync();
-
+        var response = await context.Make.FindAsync(makeDto.Id);
+        
         if (response == null) return null;
         
         response.Id = makeDto.Id;

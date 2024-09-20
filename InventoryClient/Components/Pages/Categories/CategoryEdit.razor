@@ -1,12 +1,11 @@
 @page "/CategoryEdit/{id:int}/{mode:int}"
-@using InventoryClient.Integrations
+@using InventoryClient.Integrations.Interfaces
 @inject NavigationManager Navigation
 @inject ICategoryIntegration Integration
 @inject ISnackbar Snackbar
 
-
 <MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
-    <MudText Typo="Typo.h5" GutterBottom="true">@_categoryPrompt</MudText>
+    <MudText Typo="Typo.h5" GutterBottom="true">@_makePrompt</MudText>
     <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator/>
         <MudGrid>
@@ -19,22 +18,22 @@
                                       Class="mt-3 mb-5" @bind-Value="_model.Description" For="@(() => _model.Description)"/>
                         @if (!IsAdd)
                         {
-                            <MudSelect @bind-Value="_model.Status"
-                                       Label="Status"
-                                       Disabled="IsAdd || IsView"
-                                       HelperText="Status of Category"
-                                       HelperTextOnFocus="true">
+                        <MudSelect @bind-Value="_model.Status"
+                                   Label="Status"
+                                   Disabled="IsAdd || IsView"
+                                   HelperText="Status of Category"
+                                   HelperTextOnFocus="true">
 
-                                <MudSelectItem Value="true">Enabled</MudSelectItem>
-                                <MudSelectItem Value="false">Disable</MudSelectItem>
-                            </MudSelect>
+                            <MudSelectItem Value="true">Enabled</MudSelectItem>
+                            <MudSelectItem Value="false">Disable</MudSelectItem>
+                        </MudSelect>
                         }
                     </MudCardContent>
                     <MudCardActions>
-                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default"
                                    Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>
                         @if (!IsView) {
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
+                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
                         }
 
                     </MudCardActions>

@@ -48,8 +48,7 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
     
     public async Task<CategoryDto?> UpdateCategoryAsync(CategoryDto categoryDto)
     {
-        var response = await context.Category.Where(p => p.Id == categoryDto.Id)
-            .FirstOrDefaultAsync();
+        var response = await context.Category.FindAsync(categoryDto.Id);
 
         if (response == null) return null;
         

@@ -15,6 +15,7 @@ builder.Services.AddDbContext<InventoryDbContext>(opt =>
 builder.Services.AddScoped<IProductLogic, ProductLogic>();
 builder.Services.AddScoped<ICategoryLogic, CategoryLogic>();
 builder.Services.AddScoped<IMakeLogic, MakeLogic>();
+builder.Services.AddScoped<IModelLogic, ModelLogic>();
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

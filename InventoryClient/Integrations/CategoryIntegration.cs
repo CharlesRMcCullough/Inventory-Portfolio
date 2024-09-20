@@ -1,31 +1,26 @@
 using System.Text;
 using API.DTOs;
+using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
 using Newtonsoft.Json;
 
 namespace InventoryClient.Integrations;
 
-public interface ICategoryIntegration
-{
-    Task<IEnumerable<CategoryListViewModel>> GetCategoriesAsync();
-    Task<CategoryListViewModel> GetCategoryByIdAsync(int id);
-    Task<CategoryListViewModel> CreateCategoryAsync(CategoryListViewModel categoryToAdd);
-    Task<CategoryListViewModel> UpdateCategoryAsync(CategoryListViewModel updatedCategory);
-    Task DeleteCategoryAsync(int id);
-}
-
 public class CategoryIntegration : ICategoryIntegration
 {
-    private static HttpClient _httpClient = new()
-    {
-        BaseAddress = new Uri("http://localhost:7001")
-    };
-
-        private const string ApiBase = "/api/categories";
     
+    private const string ApiBase = "/api/categories";
+    private const string ApiUrl = "http://localhost:7001";
+    
+    
+    private static readonly HttpClient HttpClient = new()
+    {
+        BaseAddress = new Uri(ApiUrl)
+    };
+   
     public async Task<IEnumerable<CategoryListViewModel>> GetCategoriesAsync()
     {
-        var response = await _httpClient.GetAsync("/api/categories");
+        var response = await HttpClient.GetAsync(ApiBase);
         var returnCategories = new List<CategoryListViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -41,7 +36,7 @@ public class CategoryIntegration : ICategoryIntegration
 
     public async Task<CategoryListViewModel> GetCategoryByIdAsync(int id)
     {
-        var response = await _httpClient.GetAsync($"/api/categories/{id}");
+        var response = await HttpClient.GetAsync(ApiBase + $"/{id}");
         var returnCategory = new CategoryListViewModel();
         if (response.IsSuccessStatusCode)
         {
@@ -67,7 +62,7 @@ public class CategoryIntegration : ICategoryIntegration
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(categoryDto), Encoding.UTF8, "application/json");
         
-        var response = await _httpClient.PutAsync($"/api/categories", jsonContent);
+        var response = await HttpClient.PutAsync(ApiBase, jsonContent);
         
         var data = response.Content.ReadAsStringAsync().Result;
         var returnCategory = JsonConvert.DeserializeObject<CategoryListViewModel>(data);
@@ -87,7 +82,7 @@ public class CategoryIntegration : ICategoryIntegration
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(categoryDto), Encoding.UTF8, "application/json");
         
-        var response = await _httpClient.PostAsync($"/api/categories", jsonContent);
+        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
         
         var data = response.Content.ReadAsStringAsync().Result;
         var returnCategory = JsonConvert.DeserializeObject<CategoryListViewModel>(data);
@@ -97,6 +92,6 @@ public class CategoryIntegration : ICategoryIntegration
 
     public async Task DeleteCategoryAsync(int id)
     {
-        var response = await _httpClient.DeleteAsync($"/api/categories/{id}");
+        await HttpClient.DeleteAsync(ApiBase + $"/{id}");
     }
 }

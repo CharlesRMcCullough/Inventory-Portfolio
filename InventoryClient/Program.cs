@@ -1,6 +1,7 @@
 using MudBlazor.Services;
 using InventoryClient.Components;
 using InventoryClient.Integrations;
+using InventoryClient.Integrations.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddScoped<ICategoryIntegration, CategoryIntegration>();
 builder.Services.AddScoped<IMakeIntegration, MakeIntegration>();
+builder.Services.AddScoped<IModelIntegration, ModelIntegration>();
 
 var app = builder.Build();
 

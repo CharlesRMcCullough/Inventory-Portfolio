@@ -18,7 +18,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving Makes from the database");
+                "Error retrieving Makes from the database!");
         }
     }
 
@@ -36,7 +36,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving make data from the database");
+                "Error retrieving Make record from the database!");
         }
     }
 
@@ -50,7 +50,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving make data from the database");
+                "Error retrieving Make data from the database!");
         }
     }
 
@@ -70,7 +70,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error creating new make record!");
+                    "Error creating new Make record!");
             }
         }
 
@@ -91,7 +91,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error updating make record!");
+                    "Error updating Make record!");
             }
         }
 
@@ -106,7 +106,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error deleting make record!");
+                    "Error deleting Make record!");
             }
         }
     }

@@ -18,7 +18,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving Categories from the database");
+                "Error retrieving Categories from the database!");
         }
     }
 
@@ -36,7 +36,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving category from the database");
+                "Error retrieving Category from the database!");
         }
     }
 
@@ -50,7 +50,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving category from the database");
+                "Error retrieving Category from the database!");
         }
     }
 
@@ -70,7 +70,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error creating new category record!");
+                "Error creating new Category record!");
         }
     }
 
@@ -91,7 +91,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error updating category record!");
+                "Error updating Category record!");
         }
     }
 
@@ -106,7 +106,7 @@ public class CategoryController(ICategoryLogic logic) : ControllerBase
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error deleting category record!");
+                "Error deleting Category record!");
         }
     }
 }

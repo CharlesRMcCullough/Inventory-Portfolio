@@ -1,21 +1,20 @@
-@page "/MakeEdit/{id:int}/{mode:int}"
-@using InventoryClient.Integrations
+@page "/ModelEdit/{id:int}/{mode:int}"
 @using InventoryClient.Integrations.Interfaces
 @inject NavigationManager Navigation
-@inject IMakeIntegration Integration
+@inject IModelIntegration Integration
 @inject ISnackbar Snackbar
 
 <MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
-    <MudText Typo="Typo.h5" GutterBottom="true">@_makePrompt</MudText>
+    <MudText Typo="Typo.h5" GutterBottom="true">@_modelPrompt</MudText>
     <EditForm Model="@ViewModel" OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator/>
         <MudGrid>
             <MudItem xs="12" sm="7">
                 <MudCard>
                     <MudCardContent>
-                        <MudTextField Label="Name" HelperText="Make Name" HelperTextOnFocus="true"
+                        <MudTextField Label="Name" HelperText="Model Name" HelperTextOnFocus="true"
                                       @bind-Value="ViewModel.Name" Disabled=@IsView For="@(() => ViewModel.Name)"/>
-                        <MudTextField Label="Description" Disabled=@IsView HelperText="Make Description" HelperTextOnFocus="true"
+                        <MudTextField Label="Description" Disabled=@IsView HelperText="Model Description" HelperTextOnFocus="true"
                                       Class="mt-3 mb-5" @bind-Value="ViewModel.Description" For="@(() => ViewModel.Description)"/>
                         @if (!IsAdd)
                         {

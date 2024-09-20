@@ -5,7 +5,7 @@ using MudBlazor;
 
 namespace InventoryClient.Components.Pages.Categories;
 
-public partial class MakeEdit : ComponentBase
+public partial class CategoryEdit : ComponentBase
 {
     [Parameter] public int Id { get; set; }
 
@@ -14,22 +14,22 @@ public partial class MakeEdit : ComponentBase
     private bool IsView => Mode == 0;
     private bool IsAdd => Mode == 2;
 
-    private CategoryListViewModel _model = new();
-    private string _categoryPrompt = string.Empty;
-    private bool _isLoading = false;
+    private readonly CategoryListViewModel _model = new();
+    private string _makePrompt = string.Empty;
+    private bool _isLoading;
 
     protected override async Task OnParametersSetAsync()
     {
         if (!IsAdd)
         {
-            var category = await Integration.GetCategoryByIdAsync(Id);
-            _model.Id = category.Id;
-            _model.Name = category.Name;
-            _model.Description = category.Description;
-            _model.Status = category.Status;
+            var make = await Integration.GetCategoryByIdAsync(Id);
+            _model.Id = make.Id;
+            _model.Name = make.Name;
+            _model.Description = make.Description;
+            _model.Status = make.Status;
         }
         
-        _categoryPrompt = IsAdd ? "Category Add" : $"Category: {_model.Name}";
+        _makePrompt = IsAdd ? "Category Add" : $"Category: {_model.Name}";
     }
 
     private async Task OnValidSubmit(EditContext context)
@@ -55,7 +55,7 @@ public partial class MakeEdit : ComponentBase
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Error updating category! {e.Message}", Severity.Error);
+            Snackbar.Add($"Error updating make! {e.Message}", Severity.Error);
         }
         finally
         {
@@ -73,7 +73,7 @@ public partial class MakeEdit : ComponentBase
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Error creating category! {e.Message}", Severity.Error);
+            Snackbar.Add($"Error creating make! {e.Message}", Severity.Error);
         }
         finally
         {

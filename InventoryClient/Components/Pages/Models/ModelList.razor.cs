@@ -2,28 +2,28 @@ using InventoryClient.ViewModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace InventoryClient.Components.Pages.Makes;
+namespace InventoryClient.Components.Pages.Models;
 
-public partial class MakesList : ComponentBase
+public partial class ModelList : ComponentBase
 {
-    private IEnumerable<MakeListViewModel> _makes = new List<MakeListViewModel>();
-    private bool _isLoading = false;
+    private IEnumerable<ModelListViewModel>? Models  { get; set; }
+    private bool _isLoading;
     
     protected override async Task OnInitializedAsync()
     {
-        await GetMakesAsync();
+        await GetModelsAsync();
     }
     
     private void OnEdit(int id)
     {
-        Navigation.NavigateTo($"/MakeEdit/{id}/1");
+        Navigation.NavigateTo($"/ModelEdit/{id}/1");
     }
 
     private async Task OnDeleteAsync(int id)
     {
         var parameters = new DialogParameters<DeleteDialog>
         {
-            { x => x.ContentText, "Do you really want to delete this make?" },
+            { x => x.ContentText, "Do you really want to delete this Model?" },
             { x => x.ButtonText, "Delete" },
             { x => x.Color, Color.Error }
         };
@@ -38,7 +38,7 @@ public partial class MakesList : ComponentBase
             try
             {
                 _isLoading = true;
-                await Integration.DeleteMakeAsync(id);
+                await Integration.DeleteModelAsync(id);
                 Snackbar.Add("Delete successful!", Severity.Success);
             }
             catch (Exception e)
@@ -52,31 +52,31 @@ public partial class MakesList : ComponentBase
             
         }
             
-        await GetMakesAsync();
+        await GetModelsAsync();
 
     }
 
     private void OnView(int id)
     {
-        Navigation.NavigateTo($"/MakeEdit/{id}/0");
+        Navigation.NavigateTo($"/ModelEdit/{id}/0");
     }
 
     private void OnAdd()
     {
-        Navigation.NavigateTo("/MakeEdit/0/2");
+        Navigation.NavigateTo("/ModelEdit/0/2");
     }
 
-    private async Task GetMakesAsync()
+    private async Task GetModelsAsync()
     {
         try
         {
             _isLoading = true;
-            _makes = await Integration.GetMakesAsync();
+            Models = await Integration.GetModelsAsync();
             StateHasChanged();
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Unable to load makes! {e.Message}", Severity.Error);
+            Snackbar.Add($"Unable to load Models! {e.Message}", Severity.Error);
         }
         finally
         {

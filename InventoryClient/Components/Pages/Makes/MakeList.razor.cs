@@ -2,28 +2,28 @@ using InventoryClient.ViewModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace InventoryClient.Components.Pages.Categories;
+namespace InventoryClient.Components.Pages.Makes;
 
-public partial class CategoryList : ComponentBase
+public partial class MakeList : ComponentBase
 {
-    private IEnumerable<CategoryListViewModel> Categories { get; set; }
-    private bool _isLoading = false;
+    private IEnumerable<MakeListViewModel>? Makes  { get; set; }
+    private bool _isLoading;
     
     protected override async Task OnInitializedAsync()
     {
-        await GetCategoriesAsync();
+        await GetMakesAsync();
     }
     
     private void OnEdit(int id)
     {
-        Navigation.NavigateTo($"/CategoryEdit/{id}/1");
+        Navigation.NavigateTo($"/MakeEdit/{id}/1");
     }
 
     private async Task OnDeleteAsync(int id)
     {
         var parameters = new DialogParameters<DeleteDialog>
         {
-            { x => x.ContentText, "Do you really want to delete this category?" },
+            { x => x.ContentText, "Do you really want to delete this Make?" },
             { x => x.ButtonText, "Delete" },
             { x => x.Color, Color.Error }
         };
@@ -38,12 +38,12 @@ public partial class CategoryList : ComponentBase
             try
             {
                 _isLoading = true;
-                await Integration.DeleteCategoryAsync(id);
+                await Integration.DeleteMakeAsync(id);
                 Snackbar.Add("Delete successful!", Severity.Success);
             }
             catch (Exception e)
             {
-                Snackbar.Add($"Error deleting Category!: {e.Message}", Severity.Error);
+                Snackbar.Add($"Error deleting Make: {e.Message}", Severity.Error);
             }
             finally
             {
@@ -52,31 +52,31 @@ public partial class CategoryList : ComponentBase
             
         }
             
-        await GetCategoriesAsync();
+        await GetMakesAsync();
 
     }
 
     private void OnView(int id)
     {
-        Navigation.NavigateTo($"/CategoryEdit/{id}/0");
+        Navigation.NavigateTo($"/MakeEdit/{id}/0");
     }
 
     private void OnAdd()
     {
-        Navigation.NavigateTo("/CategoryEdit/0/2");
+        Navigation.NavigateTo("/MakeEdit/0/2");
     }
 
-    private async Task GetCategoriesAsync()
+    private async Task GetMakesAsync()
     {
         try
         {
             _isLoading = true;
-            Categories = await Integration.GetCategoriesAsync();
+            Makes = await Integration.GetMakesAsync();
             StateHasChanged();
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Unable to load Categories! {e.Message}", Severity.Error);
+            Snackbar.Add($"Unable to load Makes! {e.Message}", Severity.Error);
         }
         finally
         {
