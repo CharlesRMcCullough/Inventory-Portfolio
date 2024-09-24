@@ -33,6 +33,22 @@ public class CategoryIntegration : ICategoryIntegration
 
         return returnCategories;
     }
+    
+    public async Task<IEnumerable<DropdownViewModel>> GetCategoriesForDropdownsAsync()
+    {
+        var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
+        var returnCategories = new List<DropdownViewModel>();
+        if (response.IsSuccessStatusCode)
+        {
+            var data = response.Content.ReadAsStringAsync().Result;
+            returnCategories = JsonConvert.DeserializeObject<List<DropdownViewModel>>(data);
+        }
+
+        if (returnCategories == null)
+            return new List<DropdownViewModel>();
+
+        return returnCategories;
+    }
 
     public async Task<CategoryListViewModel> GetCategoryByIdAsync(int id)
     {

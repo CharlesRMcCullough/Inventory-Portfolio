@@ -1,0 +1,26 @@
+@using InventoryClient.Integrations.Interfaces
+@inject ICategoryIntegration Integration
+
+        <MudSelect @bind-Value="_ddValue"
+                   Label="Categories"
+                   Disabled="false"
+                   HelperText="Choose Category"
+                   HelperTextOnFocus="true">
+
+           <MudSelectItem Value="0">All Categories</MudSelectItem>
+
+            @if (Categories != null) 
+             { 
+                 foreach (var category in Categories) 
+                 {
+                         <MudSelectItem Value="@category.Id">@category.Name</MudSelectItem>
+                 } 
+            }
+        </MudSelect>
+
+@* <InputSelect id="department" @bind-Value="_ddValue" class="form-control"> *@
+@*     @foreach (var category in Categories) *@
+@*     { *@
+@*         <option value="@category.Id">@category.Name</option> *@
+@*     } *@
+@* </InputSelect> *@

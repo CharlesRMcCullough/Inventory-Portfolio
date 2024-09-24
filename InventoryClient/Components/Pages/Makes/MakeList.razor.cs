@@ -8,6 +8,7 @@ public partial class MakeList : ComponentBase
 {
     private IEnumerable<MakeListViewModel>? Makes  { get; set; }
     private bool _isLoading;
+    private int _ddValue;
     
     protected override async Task OnInitializedAsync()
     {

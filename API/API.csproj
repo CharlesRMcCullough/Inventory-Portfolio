@@ -19,4 +19,9 @@
     <ItemGroup>
       <Folder Include="Migrations\" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Data\Migrations\20240923215020_ProductUpdate.cs" />
+      <Compile Remove="Data\Migrations\20240923215020_ProductUpdate.Designer.cs" />
+    </ItemGroup>
 </Project>
