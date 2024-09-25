@@ -13,6 +13,11 @@
             <MudItem xs="12" sm="7">
                 <MudCard>
                     <MudCardContent>
+                        <CategoryDropdown 
+                            Disabled="false"
+                            Required="true"
+                            SelectedIndex="@ViewModel.CategoryId" 
+                            OnCategoryChanged="OnCategoryChange"/>
                         <MudTextField Label="Name" HelperText="Make Name" HelperTextOnFocus="true"
                                       @bind-Value="ViewModel.Name" Disabled=@IsView For="@(() => ViewModel.Name)"/>
                         <MudTextField Label="Description" Disabled=@IsView HelperText="Make Description" HelperTextOnFocus="true"

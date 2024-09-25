@@ -27,6 +27,7 @@ public partial class MakeEdit : ComponentBase
             ViewModel.Name = make.Name;
             ViewModel.Description = make.Description;
             ViewModel.Status = make.Status;
+            ViewModel.CategoryId = make.CategoryId;
         }
         
         _makePrompt = IsAdd ? "Make Add" : $"Make: {ViewModel.Name}";
@@ -84,5 +85,11 @@ public partial class MakeEdit : ComponentBase
     private void OnCancel()
     {
         Navigation.NavigateTo("/Makes");
+    }
+    
+    private async Task OnCategoryChange(int categoryId)
+    {
+        ViewModel.CategoryId = categoryId;
+        await Task.CompletedTask;
     }
 }

@@ -31,7 +31,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
 
             if (result == null) return NotFound();
 
-            return result;
+            return Ok(result);
         }
         catch (Exception)
         {
@@ -39,7 +39,25 @@ public class MakeController(IMakeLogic logic) : ControllerBase
                 "Error retrieving Make record from the database!");
         }
     }
+    
+    [HttpGet("byCategory/{categoryId:int}")]
+    public async Task<ActionResult<List<MakeDto?>>> GetMakesByCategoryId(int categoryId)
+    {
+        try
+        {
+            var result = await logic.GetMakesByCategoryIdAsync(categoryId);
 
+            if (result == null) return NotFound();
+
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error retrieving Make records by category from the database!");
+        }
+    }
+    
     [HttpGet("dropdowns")]
     public async Task<ActionResult<List<DropdownDto>>> GetMakeDropdownList()
     {

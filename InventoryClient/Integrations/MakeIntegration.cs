@@ -19,17 +19,33 @@ public class MakeIntegration : IMakeIntegration
     public async Task<IEnumerable<MakeListViewModel>> GetMakesAsync()
     {
         var response = await HttpClient.GetAsync(ApiBase);
-        var returnCategories = new List<MakeListViewModel>();
+        var returnMakes = new List<MakeListViewModel>();
         if (response.IsSuccessStatusCode)
         {
             var data = response.Content.ReadAsStringAsync().Result;
-            returnCategories = JsonConvert.DeserializeObject<List<MakeListViewModel>>(data);
+            returnMakes = JsonConvert.DeserializeObject<List<MakeListViewModel>>(data);
         }
 
-        if (returnCategories == null)
+        if (returnMakes == null)
             return new List<MakeListViewModel>();
 
-        return returnCategories;
+        return returnMakes;
+    }
+
+    public async Task<IEnumerable<MakeListViewModel>> GetMakeByCategoryIdAsync(int id)
+    {
+        var response = await HttpClient.GetAsync(ApiBase + $"/byCategory/{id}");
+        var returnMake = new List<MakeListViewModel>();
+        if (response.IsSuccessStatusCode)
+        {
+            var data = response.Content.ReadAsStringAsync().Result;
+            returnMake = JsonConvert.DeserializeObject<List<MakeListViewModel>>(data);
+        }
+
+        if (returnMake == null)
+            return new List<MakeListViewModel>();
+
+        return returnMake;
     }
 
     public async Task<MakeListViewModel> GetMakeByIdAsync(int id)
@@ -55,7 +71,8 @@ public class MakeIntegration : IMakeIntegration
             Id = updatedMake.Id,
             Name = updatedMake.Name,
             Description = updatedMake.Description,
-            Status = Convert.ToByte(updatedMake.Status ? 1 : 0)
+            Status = Convert.ToByte(updatedMake.Status ? 1 : 0),
+            CategoryId = updatedMake.CategoryId
         };
 
         using StringContent jsonContent =

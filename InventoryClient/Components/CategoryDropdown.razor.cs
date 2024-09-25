@@ -6,25 +6,27 @@ using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
 namespace InventoryClient.Components;
-
+// https://try.mudblazor.com/snippet/wOGwuMwGcrxmCbKy
 public partial class CategoryDropdown : ComponentBase
 {
-    private int _ddValue;
+    [Parameter]
+    public bool Disabled { get; set; } = true;
+
+    [Parameter]
+    public int SelectedIndex { get; set;}
+
+    [Parameter] public bool Required { get; set; } = false;
+    
+    [Parameter]
+    public EventCallback<int> OnCategoryChanged { get; set; }
+    
+    private int selectedCategory = 0;
     
     private IEnumerable<DropdownViewModel>? Categories { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-           await GetCategories(); 
-
-        // Categories = new List<DropdownViewModel>
-        // {
-        //     new DropdownViewModel { Id = 1, Name = "Category 1" },
-        //     new DropdownViewModel { Id = 2, Name = "Category 2" },
-        //     new DropdownViewModel { Id = 1, Name = "Category 3" },
-        //     new DropdownViewModel { Id = 1, Name = "Category 4" },
-
-        // };
+        await GetCategories();
 
     }
 
@@ -32,4 +34,12 @@ public partial class CategoryDropdown : ComponentBase
     {
         Categories = await Integration.GetCategoriesForDropdownsAsync();
     }
+
+    private void OnSelectChanged(int categoryId)
+    {
+        OnCategoryChanged.InvokeAsync(categoryId);
+        SelectedIndex = categoryId;
+    }
+
+
 }

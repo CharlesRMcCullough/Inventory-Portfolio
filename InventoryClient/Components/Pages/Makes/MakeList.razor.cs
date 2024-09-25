@@ -8,7 +8,7 @@ public partial class MakeList : ComponentBase
 {
     private IEnumerable<MakeListViewModel>? Makes  { get; set; }
     private bool _isLoading;
-    private int _ddValue;
+    private int selectedCategory = 0;
     
     protected override async Task OnInitializedAsync()
     {
@@ -73,6 +73,25 @@ public partial class MakeList : ComponentBase
         {
             _isLoading = true;
             Makes = await Integration.GetMakesAsync();
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Unable to load Makes! {e.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task OnCategoryChange(int categoryId)
+    {
+        try
+        {
+            _isLoading = true;
+            Makes = await Integration.GetMakeByCategoryIdAsync(categoryId);
+            selectedCategory = categoryId;
             StateHasChanged();
         }
         catch (Exception e)

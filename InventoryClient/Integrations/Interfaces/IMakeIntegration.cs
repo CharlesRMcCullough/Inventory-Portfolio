@@ -6,6 +6,7 @@ public interface IMakeIntegration
 {
     Task<IEnumerable<MakeListViewModel>> GetMakesAsync();
     Task<MakeListViewModel> GetMakeByIdAsync(int id);
+    Task<IEnumerable<MakeListViewModel>> GetMakeByCategoryIdAsync(int id);
     Task<MakeListViewModel> CreateMakeAsync(MakeListViewModel makeToAdd);
     Task<MakeListViewModel> UpdateMakeAsync(MakeListViewModel updatedMake);
     Task DeleteMakeAsync(int id);

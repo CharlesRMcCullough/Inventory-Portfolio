@@ -11,15 +11,19 @@
 <MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
     <MudText Typo="Typo.h4" GutterBottom="true">Makes</MudText>
     <MudGrid Spacing="12" Class="mt-4">
-        <MudItem xs="10">
-            <CategoryDropdown />
+        <MudItem xs="6">
+            <CategoryDropdown
+                Disabled="false" 
+                SelectedIndex="@selectedCategory" 
+                OnCategoryChanged="OnCategoryChange"/>
         </MudItem>
         <MudItem xs="10">
             <MudGrid>
-                <MudItem xs="12">
+                <MudItem xs="10">
                     <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Make</MudButton>
                     <MudDataGrid Items="@Makes">
                         <Columns>
+                            <PropertyColumn Property="x => x.CategoryName" Title="Category" Filterable="true"/>
                             <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
                             <PropertyColumn Property="x => x.Description" Title="Description"/>
                             <TemplateColumn CellClass="d-flex justify-end">
