@@ -8,6 +8,7 @@ public partial class ModelList : ComponentBase
 {
     private IEnumerable<ModelListViewModel>? Models  { get; set; }
     private bool _isLoading;
+    private int selectedMake = 0;
     
     protected override async Task OnInitializedAsync()
     {
@@ -77,6 +78,25 @@ public partial class ModelList : ComponentBase
         catch (Exception e)
         {
             Snackbar.Add($"Unable to load Models! {e.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+    
+    private async Task OnMakeChange(int makeId)
+    {
+        try
+        {
+            _isLoading = true;
+            Models = await Integration.GetModelsByMakeIdAsync(makeId);
+            selectedMake = makeId;
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Unable to load models! {e.Message}", Severity.Error);
         }
         finally
         {

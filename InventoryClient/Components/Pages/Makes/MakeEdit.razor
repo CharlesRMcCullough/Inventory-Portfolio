@@ -1,6 +1,7 @@
 @page "/MakeEdit/{id:int}/{mode:int}"
 @using InventoryClient.Integrations
 @using InventoryClient.Integrations.Interfaces
+@using InventoryClient.Components.Dropdowns
 @inject NavigationManager Navigation
 @inject IMakeIntegration Integration
 @inject ISnackbar Snackbar
@@ -14,7 +15,7 @@
                 <MudCard>
                     <MudCardContent>
                         <CategoryDropdown 
-                            Disabled="false"
+                            Disabled="IsAdd || IsView"
                             Required="true"
                             SelectedIndex="@ViewModel.CategoryId" 
                             OnCategoryChanged="OnCategoryChange"/>

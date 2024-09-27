@@ -27,6 +27,7 @@ public partial class ModelEdit : ComponentBase
             ViewModel.Name = make.Name;
             ViewModel.Description = make.Description;
             ViewModel.Status = make.Status;
+            ViewModel.MakeId = make.MakeId;
         }
         
         _modelPrompt = IsAdd ? "Model Add" : $"Model: {ViewModel.Name}";
@@ -84,5 +85,11 @@ public partial class ModelEdit : ComponentBase
     private void OnCancel()
     {
         Navigation.NavigateTo("/Models");
+    }
+    
+    private async Task OnMakeChange(int makeId)
+    {
+        ViewModel.MakeId = makeId;
+        await Task.CompletedTask;
     }
 }

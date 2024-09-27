@@ -2,6 +2,7 @@ using API.Data;
 using API.Logic;
 using API.Logic.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,10 +24,16 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+
+builder.Services.AddSerilog();
+
 var app = builder.Build();
 
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseSerilogRequestLogging();
 
 app.Run();

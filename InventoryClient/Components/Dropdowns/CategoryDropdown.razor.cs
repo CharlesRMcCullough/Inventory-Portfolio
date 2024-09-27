@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor;
 
-namespace InventoryClient.Components;
+namespace InventoryClient.Components.Dropdowns;
 // https://try.mudblazor.com/snippet/wOGwuMwGcrxmCbKy
 public partial class CategoryDropdown : ComponentBase
 {
@@ -19,8 +19,6 @@ public partial class CategoryDropdown : ComponentBase
     
     [Parameter]
     public EventCallback<int> OnCategoryChanged { get; set; }
-    
-    private int selectedCategory = 0;
     
     private IEnumerable<DropdownViewModel>? Categories { get; set; }
 
@@ -40,6 +38,4 @@ public partial class CategoryDropdown : ComponentBase
         OnCategoryChanged.InvokeAsync(categoryId);
         SelectedIndex = categoryId;
     }
-
-
 }

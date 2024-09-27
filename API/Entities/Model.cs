@@ -14,5 +14,5 @@ public class Model
     public byte Status { get; set; }
     
     public int MakeId { get; set; }
-    public Make? Make { get; set; } = null!;
+    public Make? Make { get; set; } = null!;    // Navigation Property
 }

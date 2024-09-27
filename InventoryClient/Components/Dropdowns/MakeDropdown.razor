@@ -1,0 +1,23 @@
+@using InventoryClient.Integrations.Interfaces
+@inject IMakeIntegration Integration
+
+<MudSelect
+    T="int"
+    Label="Makes"
+    Value="@SelectedIndex"
+    ValueChanged="OnSelectChanged"
+    Disabled="@Disabled"
+    Required="@Required"
+    HelperText="Choose Make"
+    HelperTextOnFocus="true">
+
+    <MudSelectItem Value="0">All Makes</MudSelectItem>
+
+    @if (Makes != null)
+    {
+        foreach (var category in Makes)
+        {
+            <MudSelectItem Value="@category.Id">@category.Name</MudSelectItem>
+        }
+    }
+</MudSelect>

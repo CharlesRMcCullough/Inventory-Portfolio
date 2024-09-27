@@ -59,7 +59,7 @@ public class MakeController(IMakeLogic logic) : ControllerBase
     }
     
     [HttpGet("dropdowns")]
-    public async Task<ActionResult<List<DropdownDto>>> GetMakeDropdownList()
+    public async Task<ActionResult<List<DropdownDto>?>> GetMakeDropdownList()
     {
         try
         {
@@ -81,6 +81,9 @@ public class MakeController(IMakeLogic logic) : ControllerBase
                     return BadRequest();
 
                 var createdMake = await logic.CreateMakeAsync(makeDto);
+                
+                if (createdMake == null)
+                    return BadRequest("Make with name already exists!");
 
                 return CreatedAtAction(nameof(GetMakeById),
                     new { id = createdMake.Id }, createdMake);

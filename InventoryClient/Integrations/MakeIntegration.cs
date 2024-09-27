@@ -32,7 +32,7 @@ public class MakeIntegration : IMakeIntegration
         return returnMakes;
     }
 
-    public async Task<IEnumerable<MakeListViewModel>> GetMakeByCategoryIdAsync(int id)
+    public async Task<IEnumerable<MakeListViewModel>> GetMakesByCategoryIdAsync(int id)
     {
         var response = await HttpClient.GetAsync(ApiBase + $"/byCategory/{id}");
         var returnMake = new List<MakeListViewModel>();
@@ -62,6 +62,22 @@ public class MakeIntegration : IMakeIntegration
             return new MakeListViewModel();
 
         return returnMake;
+    }
+    
+    public async Task<IEnumerable<DropdownViewModel>> GetMakesForDropdownsAsync()
+    {
+        var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
+        var returnMakes = new List<DropdownViewModel>();
+        if (response.IsSuccessStatusCode)
+        {
+            var data = response.Content.ReadAsStringAsync().Result;
+            returnMakes = JsonConvert.DeserializeObject<List<DropdownViewModel>>(data);
+        }
+
+        if (returnMakes == null)
+            return new List<DropdownViewModel>();
+
+        return returnMakes;
     }
 
     public async Task<MakeListViewModel> UpdateMakeAsync(MakeListViewModel updatedMake)

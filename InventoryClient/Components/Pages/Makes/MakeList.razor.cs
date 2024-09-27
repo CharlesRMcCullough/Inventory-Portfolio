@@ -44,7 +44,7 @@ public partial class MakeList : ComponentBase
             }
             catch (Exception e)
             {
-                Snackbar.Add($"Error deleting Make: {e.Message}", Severity.Error);
+                Snackbar.Add($"Error deleting make: {e.Message}", Severity.Error);
             }
             finally
             {
@@ -90,7 +90,7 @@ public partial class MakeList : ComponentBase
         try
         {
             _isLoading = true;
-            Makes = await Integration.GetMakeByCategoryIdAsync(categoryId);
+            Makes = await Integration.GetMakesByCategoryIdAsync(categoryId);
             selectedCategory = categoryId;
             StateHasChanged();
         }

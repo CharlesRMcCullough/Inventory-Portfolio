@@ -39,13 +39,31 @@ public class ModelController(IModelLogic logic) : ControllerBase
                 "Error retrieving Model data from the database!");
         }
     }
-
-    [HttpGet("dropdowns")]
-    public async Task<ActionResult<List<DropdownDto>>> GetModelDropdownListAsync()
+    
+    [HttpGet("byMake/{makeId:int}")]
+    public async Task<ActionResult<List<ModelDto?>>> GetModelsByMakeId(int makeId)
     {
         try
         {
-            return await logic.GetModelsForDropdownAsync();
+            var result = await logic.GetModelsByMakeIdAsync(makeId);
+
+            if (result == null) return NotFound();
+
+            return Ok(result);
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error retrieving Make records by makes from the database!");
+        }
+    }
+
+    [HttpGet("dropdowns")]
+    public async Task<ActionResult<List<DropdownDto>?>> GetModelDropdownListAsync()
+    {
+        try
+        {
+            return Ok(await logic.GetModelsForDropdownAsync());
         }
         catch (Exception)
         {
@@ -63,7 +81,9 @@ public class ModelController(IModelLogic logic) : ControllerBase
                 return BadRequest();
 
             var createdModel = await logic.CreateModelAsync(modelDto);
-
+            
+            if (createdModel == null) return BadRequest();
+            
             return CreatedAtAction(nameof(GetModelById),
                 new { id = createdModel.Id }, createdModel);
         }

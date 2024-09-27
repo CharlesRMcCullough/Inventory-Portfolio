@@ -1,5 +1,6 @@
 @page "/ModelEdit/{id:int}/{mode:int}"
 @using InventoryClient.Integrations.Interfaces
+@using InventoryClient.Components.Dropdowns
 @inject NavigationManager Navigation
 @inject IModelIntegration Integration
 @inject ISnackbar Snackbar
@@ -12,6 +13,11 @@
             <MudItem xs="12" sm="7">
                 <MudCard>
                     <MudCardContent>
+                        <MakeDropdown
+                            Disabled="IsAdd || IsView"
+                            Required="true"
+                            SelectedIndex="@ViewModel.MakeId"
+                            OnMakeChanged="OnMakeChange"/>
                         <MudTextField Label="Name" HelperText="Model Name" HelperTextOnFocus="true"
                                       @bind-Value="ViewModel.Name" Disabled=@IsView For="@(() => ViewModel.Name)"/>
                         <MudTextField Label="Description" Disabled=@IsView HelperText="Model Description" HelperTextOnFocus="true"

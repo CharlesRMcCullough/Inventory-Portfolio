@@ -1,5 +1,6 @@
 @page "/Models"
 @using InventoryClient.Integrations.Interfaces
+@using InventoryClient.Components.Dropdowns
 @inject NavigationManager Navigation
 @inject IModelIntegration Integration
 @inject IDialogService DialogService
@@ -11,11 +12,18 @@
     <MudText Typo="Typo.h4" GutterBottom="true">Models</MudText>
     <MudGrid Spacing="12" Class="mt-4">
         <MudItem xs="10">
+            <MudItem xs="6">
+                <MakeDropdown
+                    Disabled="false"
+                    SelectedIndex="@selectedMake"
+                    OnMakeChanged="OnMakeChange"/>
+            </MudItem>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto"  OnClick="OnAdd">Add Model</MudButton>
+                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Model</MudButton>
                     <MudDataGrid Items="@Models">
                         <Columns>
+                            <PropertyColumn Property="x => x.MakeName" Title="Make" Filterable="true"/>
                             <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
                             <PropertyColumn Property="x => x.Description" Title="Description"/>
                             <TemplateColumn CellClass="d-flex justify-end">

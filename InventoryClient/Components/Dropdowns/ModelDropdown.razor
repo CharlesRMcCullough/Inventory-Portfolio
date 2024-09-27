@@ -1,0 +1,23 @@
+@using InventoryClient.Integrations.Interfaces
+@inject IModelIntegration Integration
+
+<MudSelect
+    T="int"
+    Label="Models"
+    Value="@SelectedIndex"
+    ValueChanged="OnSelectChanged"
+    Disabled="@Disabled"
+    Required="@Required"
+    HelperText="Choose a Model"
+    HelperTextOnFocus="true">
+
+    <MudSelectItem Value="0">All Categories</MudSelectItem>
+
+    @if (Models != null)
+    {
+        foreach (var model in Models)
+        {
+            <MudSelectItem Value="@model.Id">@model.Name</MudSelectItem>
+        }
+    }
+</MudSelect>

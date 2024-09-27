@@ -47,7 +47,39 @@ public class ModelIntegration : IModelIntegration
 
         return returnModel;
     }
+    
+    public async Task<IEnumerable<ModelListViewModel>> GetModelsByMakeIdAsync(int id)
+    {
+        var response = await HttpClient.GetAsync(ApiBase + $"/byMake/{id}");
+        var returnModels = new List<ModelListViewModel>();
+        if (response.IsSuccessStatusCode)
+        {
+            var data = response.Content.ReadAsStringAsync().Result;
+            returnModels = JsonConvert.DeserializeObject<List<ModelListViewModel>>(data);
+        }
 
+        if (returnModels == null)
+            return new List<ModelListViewModel>();
+
+        return returnModels;
+    }
+    
+    public async Task<IEnumerable<DropdownViewModel>> GetModelsForDropdownsAsync()
+    {
+        var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
+        var returnModels = new List<DropdownViewModel>();
+        if (response.IsSuccessStatusCode)
+        {
+            var data = response.Content.ReadAsStringAsync().Result;
+            returnModels = JsonConvert.DeserializeObject<List<DropdownViewModel>>(data);
+        }
+
+        if (returnModels == null)
+            return new List<DropdownViewModel>();
+
+        return returnModels;
+    }
+    
     public async Task<ModelListViewModel> UpdateModelAsync(ModelListViewModel updatedModel)
     {
         var modelDto = new ModelDto()
@@ -55,10 +87,12 @@ public class ModelIntegration : IModelIntegration
             Id = updatedModel.Id,
             Name = updatedModel.Name,
             Description = updatedModel.Description,
-            Status = Convert.ToByte(updatedModel.Status ? 1 : 0)
+            Status = Convert.ToByte(updatedModel.Status ? 1 : 0),
+            MakeId = updatedModel.MakeId
         };
         
-        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(modelDto), Encoding.UTF8, "application/json");
+        using StringContent jsonContent = 
+            new StringContent(JsonConvert.SerializeObject(modelDto), Encoding.UTF8, "application/json");
         
         var response = await HttpClient.PutAsync(ApiBase, jsonContent);
         
