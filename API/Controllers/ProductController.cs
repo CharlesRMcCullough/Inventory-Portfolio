@@ -1,5 +1,5 @@
 using API.DTOs;
-using API.Logic;
+using API.Logic.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -9,7 +9,7 @@ namespace API.Controllers;
 public class ProductController(IProductLogic logic) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<List<ProductDto>>> GetProducts()
+    public async Task<ActionResult<List<ProductDto>>> GetProductsAsync()
     {
         try
         {
@@ -22,9 +22,36 @@ public class ProductController(IProductLogic logic) : ControllerBase
         }
     }
     
-    [HttpGet("{id}")]
-    public async Task<ActionResult<ProductDto>> GetProductById(int id)
+    public async Task<ActionResult<ProductDto?>> GetProductByIdAsync(int id)
     {
-        return await logic.GetProductByIdAsync(id);
+        try
+        {
+            var result = await logic.GetProductByIdAsync(id);
+
+            if (result == null) return NotFound();
+
+            return result;
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error retrieving product from the database!");
+        }
     }
+    
+    [HttpGet("dropdowns")]
+    public async Task<ActionResult<List<DropdownDto>?>> GetProductDropdownListAsync()
+    {
+        try
+        {
+            return await logic.GetProductsForDropdownAsync();
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error retrieving products for dropdown list from the database!");
+        }
+    }
+    
+
 }

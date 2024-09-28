@@ -1,10 +1,11 @@
 using API.DTOs;
-using Microsoft.AspNetCore.Mvc;
 
-namespace API.Logic;
+
+namespace API.Logic.Interfaces;
 
 public interface IProductLogic
 {
-    Task<ActionResult<List<ProductDto>>> GetProductsAsync();
-    Task<ActionResult<ProductDto>> GetProductByIdAsync(int id);
+    Task <List<ProductDto>?> GetProductsAsync();
+    Task<ProductDto> GetProductByIdAsync(int id);
+    Task<List<DropdownDto>?> GetProductsForDropdownAsync();
 }

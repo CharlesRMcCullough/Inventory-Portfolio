@@ -1,0 +1,21 @@
+<MudSelect
+    T="int"
+    Label="Products"
+    Value="@SelectedIndex"
+    ValueChanged="OnSelectChanged"
+    Disabled="@Disabled"
+    Required="@Required"
+    HelperText="Choose Products"
+    HelperTextOnFocus="true">
+
+    <MudSelectItem Value="0">All Products</MudSelectItem>
+
+    @if (Products != null)
+    {
+    foreach (var product in Products)
+    {
+    <MudSelectItem Value="@product.Id">@product.Name</MudSelectItem>
+    }
+    }
+</MudSelect>
+
