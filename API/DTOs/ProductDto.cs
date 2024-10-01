@@ -10,8 +10,11 @@ public class ProductDto
     public int Quantity { get; set; }
     public decimal Price { get; set; }
     public string? Notes { get; set; }
-    public Category? Category { get; set; }
-    public Model? Model { get; set; }
-    public Make? Make { get; set; }
+    public int CategoryId { get; set; }
+    public string? CategoryName { get; set; }
+    public int ModelId { get; set; }
+    public string? ModelName { get; set; }
+    public int MakeId { get; set; }
+    public string? MakeName { get; set; }
     public byte Status { get; set; }
 }

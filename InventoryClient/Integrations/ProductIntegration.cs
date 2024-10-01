@@ -6,7 +6,7 @@ namespace InventoryClient.Integrations;
 
 public class ProductIntegration : IProductIntegration
 {
-    private const string ApiBase = "/api/categories";
+    private const string ApiBase = "/api/products";
     private const string ApiUrl = "http://localhost:7001";
     
     private static readonly HttpClient HttpClient = new()
@@ -30,25 +30,9 @@ public class ProductIntegration : IProductIntegration
         return returnProducts;
     }
     
-    public async Task<IEnumerable<DropdownViewModel>> GetProductsForDropdownsAsync()
-    {
-        var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
-        var returnProducts = new List<DropdownViewModel>();
-        if (response.IsSuccessStatusCode)
-        {
-            var data = response.Content.ReadAsStringAsync().Result;
-            returnProducts = JsonConvert.DeserializeObject<List<DropdownViewModel>>(data);
-        }
-
-        if (returnProducts == null)
-            return new List<DropdownViewModel>();
-
-        return returnProducts;
-    }
-    
     public async Task<ProductListViewModel> GetProductByIdAsync(int id)
     {
-        var response = await HttpClient.GetAsync(ApiBase + $"/{id}");
+        var response = await HttpClient.GetAsync($"{ApiBase}/{id}");
         var returnProduct = new ProductListViewModel();
         if (response.IsSuccessStatusCode)
         {
@@ -61,6 +45,34 @@ public class ProductIntegration : IProductIntegration
 
         return returnProduct;
     }
+    
+    public async Task<IEnumerable<DropdownViewModel>> GetProductsForDropdownsAsync()
+    {
+        try
+        {
+            var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
+            response.EnsureSuccessStatusCode(); 
+
+            var result = await response.Content.ReadAsStringAsync(); 
+            var returnProducts = JsonConvert.DeserializeObject<List<DropdownViewModel>>(result) ?? new List<DropdownViewModel>();
+    
+            return returnProducts;
+        }
+        catch (HttpRequestException)
+        {
+            return new List<DropdownViewModel>(); // Return an empty list on error
+        }
+        catch (JsonException)
+        {
+            // Log the exception (logging mechanism not shown here)
+            return new List<DropdownViewModel>(); // Return an empty list on deserialization error
+        }
+    }
+    
+
+
+    
+
     
     
 }

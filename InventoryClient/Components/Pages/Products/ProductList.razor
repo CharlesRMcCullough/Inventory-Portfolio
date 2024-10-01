@@ -1,0 +1,42 @@
+@page "/Products"
+@using InventoryClient.Integrations.Interfaces
+@inject NavigationManager Navigation
+@inject IProductIntegration Integration
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<PageTitle>Products</PageTitle>
+
+<MudContainer Class="mt-12" MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h4" GutterBottom="true">Products</MudText>
+    <MudGrid Spacing="14" Class="mt-4">
+        <MudItem xs="10">
+            <MudGrid >
+                <MudItem xs="12" >
+                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="ml-auto mb-5"  OnClick="OnAdd">Add Product</MudButton>
+                    <MudDataGrid Items="@Products">
+                        <Columns>
+                            <PropertyColumn Property="x => x.CategoryName" Title="Category" Filterable="true"/>
+                            <PropertyColumn Property="x => x.MakeName" Title="Make" Filterable="false"/>
+                            <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true" />
+                            <PropertyColumn Property="x => x.Description" Title="Description"/>
+                            <PropertyColumn Property="x => x.Quantity" Title="Quantity"/>
+                            <PropertyColumn Property="x => x.Price" Title="Price"/>
+                            
+                            <TemplateColumn CellClass="d-flex justify-end">
+                                <CellTemplate>
+                                    <MudIconButton Size="@Size.Small" Class="mr-3" Icon="@Icons.Material.Outlined.Visibility" OnClick="() => OnView(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="() => OnEdit(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="(async () => await OnDeleteAsync(context.Item.Id))"/>
+                                </CellTemplate>
+                            </TemplateColumn>
+                        </Columns>
+                    </MudDataGrid>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+    <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
+        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    </MudOverlay>
+</MudContainer>

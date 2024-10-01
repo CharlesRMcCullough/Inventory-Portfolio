@@ -15,6 +15,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddScoped<ICategoryIntegration, CategoryIntegration>();
 builder.Services.AddScoped<IMakeIntegration, MakeIntegration>();
 builder.Services.AddScoped<IModelIntegration, ModelIntegration>();
+builder.Services.AddScoped<IProductIntegration, ProductIntegration>();
 
 var app = builder.Build();
 
