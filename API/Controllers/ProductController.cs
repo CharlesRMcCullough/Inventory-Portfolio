@@ -17,11 +17,11 @@ public class ProductController(IProductLogic logic) : ControllerBase
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, 
+            return StatusCode(StatusCodes.Status500InternalServerError,
                 "Error retrieving data from the database");
         }
     }
-    
+
     public async Task<ActionResult<ProductDto?>> GetProductByIdAsync(int id)
     {
         try
@@ -30,7 +30,7 @@ public class ProductController(IProductLogic logic) : ControllerBase
 
             if (result == null) return NotFound();
 
-            return result;
+            return Ok(result);
         }
         catch (Exception)
         {
@@ -38,7 +38,7 @@ public class ProductController(IProductLogic logic) : ControllerBase
                 "Error retrieving product from the database!");
         }
     }
-    
+
     [HttpGet("dropdowns")]
     public async Task<ActionResult<List<DropdownDto>?>> GetProductDropdownListAsync()
     {
@@ -52,6 +52,64 @@ public class ProductController(IProductLogic logic) : ControllerBase
                 "Error retrieving products for dropdown list from the database!");
         }
     }
-    
+
+    [HttpPost]
+    public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductDto? productDto)
+    {
+        try
+        {
+            if (productDto != null)
+            {
+                var createdProduct = await logic.CreateProductAsync(productDto);
+
+                return CreatedAtAction(nameof(GetProductByIdAsync),
+                    new { id = createdProduct.Id }, createdProduct);
+            }
+
+            return BadRequest();
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error creating new product record!");
+        }
+    }
+
+    [HttpPut]
+    public async Task<ActionResult<ProductDto>> UpdateProduct([FromBody] ProductDto? productDto)
+    {
+        try
+        {
+            if (productDto == null)
+                return BadRequest();
+
+            var updatedProduct = await logic.UpdateProductAsync(productDto);
+
+            if (updatedProduct == null) return NotFound($"Product with name {productDto.Name} was not found");
+
+            return updatedProduct;
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error updating product record!");
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> DeleteProduct(int id)
+    {
+        try
+        {
+            await logic.DeleteProductsAsync(id);
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error deleting product record!");
+        }
+    }
+
 
 }

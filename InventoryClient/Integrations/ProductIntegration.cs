@@ -1,3 +1,5 @@
+using System.Text;
+using API.DTOs;
 using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
 using Newtonsoft.Json;
@@ -50,7 +52,7 @@ public class ProductIntegration : IProductIntegration
     {
         try
         {
-            var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
+            var response = await HttpClient.GetAsync($"{ApiBase}/dropdowns");
             response.EnsureSuccessStatusCode(); 
 
             var result = await response.Content.ReadAsStringAsync(); 
@@ -68,11 +70,50 @@ public class ProductIntegration : IProductIntegration
             return new List<DropdownViewModel>(); // Return an empty list on deserialization error
         }
     }
-    
 
+     public async Task<ProductListViewModel> UpdateProductAsync(ProductListViewModel productToUpdate)
+    {
+        var productDto = new ProductDto()
 
+        {
+            Id = productToUpdate.Id,
+            Name = productToUpdate.Name,
+            Description = productToUpdate.Description,
+            Status = productToUpdate.Status
+        };
+        
+        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");
+        
+        var response = await HttpClient.PutAsync(ApiBase, jsonContent);
+        
+        var data = response.Content.ReadAsStringAsync().Result;
+        var updatedProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
+        
+        return updatedProduct ?? new ProductListViewModel();
+    }
     
+    public async Task<ProductListViewModel> CreateProductAsync(ProductListViewModel productToAdd)
+    {
+        var productDto = new ProductDto()
+        {
+            Id = productToAdd.Id,
+            Name = productToAdd.Name,
+            Description = productToAdd.Description,
+            Status = Convert.ToByte(1)
+        };
+        
+        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");
+        
+        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+        
+        var data = response.Content.ReadAsStringAsync().Result;
+        var returnProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
+        
+        return returnProduct ?? new ProductListViewModel();
+    }
 
-    
-    
+    public async Task DeleteProductAsync(int id)
+    {
+        await HttpClient.DeleteAsync($"{ApiBase}/{id}");
+    }
 }

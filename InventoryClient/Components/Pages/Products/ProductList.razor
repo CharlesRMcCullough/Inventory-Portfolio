@@ -9,15 +9,16 @@
 
 <MudContainer Class="mt-12" MaxWidth="MaxWidth.Large">
     <MudText Typo="Typo.h4" GutterBottom="true">Products</MudText>
-    <MudGrid Spacing="14" Class="mt-4">
+    <MudGrid Spacing="14" Class="mt-4" MaxWidth="MaxWidth.Large">
         <MudItem xs="10">
             <MudGrid >
                 <MudItem xs="12" >
                     <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="ml-auto mb-5"  OnClick="OnAdd">Add Product</MudButton>
-                    <MudDataGrid Items="@Products">
+                    <MudDataGrid  maxWidth="100%" Items="@Products">
                         <Columns>
                             <PropertyColumn Property="x => x.CategoryName" Title="Category" Filterable="true"/>
                             <PropertyColumn Property="x => x.MakeName" Title="Make" Filterable="false"/>
+                            <PropertyColumn Property="x => x.ModelName" Title="Model" Filterable="false"/>
                             <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true" />
                             <PropertyColumn Property="x => x.Description" Title="Description"/>
                             <PropertyColumn Property="x => x.Quantity" Title="Quantity"/>
