@@ -22,6 +22,7 @@ public class ProductController(IProductLogic logic) : ControllerBase
         }
     }
 
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto?>> GetProductByIdAsync(int id)
     {
         try
@@ -54,24 +55,20 @@ public class ProductController(IProductLogic logic) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductDto? productDto)
+    public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductDto request)
     {
         try
         {
-            if (productDto != null)
-            {
-                var createdProduct = await logic.CreateProductAsync(productDto);
+            if (request == null)
+                return BadRequest();
 
-                return CreatedAtAction(nameof(GetProductByIdAsync),
-                    new { id = createdProduct.Id }, createdProduct);
-            }
+            var createdProduct = await logic.CreateProductAsync(request);
 
-            return BadRequest();
+            return CreatedAtAction(nameof(GetProductByIdAsync), new { id = createdProduct.Id }, createdProduct);
         }
         catch (Exception)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error creating new product record!");
+            return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new product record!");
         }
     }
 

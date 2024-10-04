@@ -15,22 +15,24 @@ public partial class ProductEdit : ComponentBase
     private bool IsAdd => Mode == 2;
 
     private ProductListViewModel ViewModel { get; set; } = new ProductListViewModel();
-    private string _makePrompt = string.Empty;
+    private string _productPrompt = string.Empty;
     private bool _isLoading = false;
 
         protected override async Task OnParametersSetAsync()
     {
         if (!IsAdd)
         {
-            var make = await Integration.GetProductByIdAsync(Id);
-            ViewModel.Id = make.Id;
-            ViewModel.Name = make.Name;
-            ViewModel.Description = make.Description;
-            ViewModel.Status = make.Status;
-            ViewModel.CategoryId = make.CategoryId;
+            var product = await Integration.GetProductByIdAsync(Id);
+            ViewModel.Id = product.Id;
+            ViewModel.Name = product.Name;
+            ViewModel.Description = product.Description;
+            ViewModel.Status = product.Status;
+            ViewModel.CategoryId = product.CategoryId;
+            ViewModel.Quantity = product.Quantity;
+            ViewModel.Price = product.Price;
         }
         
-        _makePrompt = IsAdd ? "Product Add" : $"Make: {ViewModel.Name}";
+        _productPrompt = IsAdd ? "Product Add" : $"Product: {ViewModel.Name}";
     }
 
          private async Task OnValidSubmit(EditContext context)
@@ -44,7 +46,7 @@ public partial class ProductEdit : ComponentBase
             await UpdateProduct();
         }
 
-        Navigation.NavigateTo("/Makes");
+        Navigation.NavigateTo("/Products");
     }
     
     private async Task UpdateProduct()
@@ -84,7 +86,7 @@ public partial class ProductEdit : ComponentBase
     
     private void OnCancel()
     {
-        Navigation.NavigateTo("/Makes");
+        Navigation.NavigateTo("/Products");
     }
     
     private async Task OnCategoryChange(int categoryId)

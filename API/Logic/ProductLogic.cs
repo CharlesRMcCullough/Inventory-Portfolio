@@ -5,42 +5,43 @@ using API.Data;
 using API.Logic.Interfaces;
 using Serilog;
 using API.Entities;
+using AutoMapper.QueryableExtensions;
 
 namespace API.Logic;
 
 public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProductLogic
 {
-    public async Task<List<ProductDto>?> GetProductsAsync()
+
+    public async Task<List<ProductDto>> GetProductsAsync()
     {
         try
         {
-            var product = await context.Products
+            return await context.Products
                 .Where(p => p.Status == 1)
                 .Include(c => c.Category)
                 .Include(m => m.Model)
                 .Include(ma => ma.Make)
+                .AsNoTracking()
+                .ProjectTo<ProductDto>(mapper.ConfigurationProvider)
                 .ToListAsync();
-
-            var products = mapper.Map<List<ProductDto>>(product);
-            return products;
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"Error getting products - GetProductsAsync {ex.Message}");
-            return null;
+            throw;
         }
     }
-
     public async Task<ProductDto?> GetProductByIdAsync(int id)
     {
         try
         {
             return await context.Products
+                .Where(p => p.Id == id && p.Status == 1)
                 .Include(c => c.Category)
                 .Include(m => m.Model)
                 .Include(ma => ma.Make)
                 .Select(p => mapper.Map<ProductDto>(p))
-                .FirstOrDefaultAsync(p => p.Id == id && p.Status == 1);
+                .FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {

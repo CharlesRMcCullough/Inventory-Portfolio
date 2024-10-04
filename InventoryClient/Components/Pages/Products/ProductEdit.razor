@@ -1,13 +1,59 @@
-@page "/ProductEdit"
+@page "/ProductEdit/{id:int}/{mode:int}"
 @using InventoryClient.Integrations
 @using InventoryClient.Integrations.Interfaces
 @inject IProductIntegration Integration
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
 
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h5" GutterBottom="true">@_productPrompt</MudText>
+    <EditForm Model="@ViewModel" OnValidSubmit="OnValidSubmit">
+        <DataAnnotationsValidator/>
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudCard>
+                    <MudCardContent>
+@*                         <MakeDropdown
+                            Disabled="IsAdd || IsView"
+                            Required="true"
+                            SelectedIndex="@ViewModel.MakeId"
+                            OnMakeChanged="OnMakeChange"/> *@
+                        <MudTextField Label="Name" HelperText="Model Name" HelperTextOnFocus="true"
+                                      @bind-Value="ViewModel.Name" Disabled=@IsView For="@(() => ViewModel.Name)"/>
+                        <MudTextField Label="Description" Disabled=@IsView HelperText="Model Description" HelperTextOnFocus="true"
+                                      Class="mt-3 mb-5" @bind-Value="ViewModel.Description" For="@(() => ViewModel.Description)"/>
+                        <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Quantity" Label="Quantity" Variant="Variant.Text"
+                                        HelperText="Product Quantity" />
+                        <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Price" Label="Price" Variant="Variant.Text"
+                                        HelperText="Product Price" Format="C2"/>
+                        <MudTextField Label="Price" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
+                                      Class="mt-3 mb-5" @bind-Value="ViewModel.Notes" For="@(() => ViewModel.Notes)"/>
+                        @if (!IsAdd)
+                        {
+                            <MudSelect @bind-Value="ViewModel.Status"
+                                       Label="Status"
+                                       Disabled="IsAdd || IsView"
+                                       HelperText="Status of Category"
+                                       HelperTextOnFocus="true">
 
-<h3>ProductEdit</h3>
+                                <MudSelectItem Value="true">Enabled</MudSelectItem>
+                                <MudSelectItem Value="false">Disable</MudSelectItem>
+                            </MudSelect>
+                        }
+                    </MudCardContent>
+                    <MudCardActions>
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
+                                   Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>
+                        @if (!IsView) {
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
+                        }
 
-@code {
-    
-}
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        </MudGrid>
+    </EditForm>
+    <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
+        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+    </MudOverlay>
+</MudContainer>

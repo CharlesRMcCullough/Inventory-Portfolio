@@ -79,7 +79,7 @@ public class ProductIntegration : IProductIntegration
             Id = productToUpdate.Id,
             Name = productToUpdate.Name,
             Description = productToUpdate.Description,
-            Status = productToUpdate.Status
+            Status = Convert.ToByte(productToUpdate.Status ? 1 : 0),
         };
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");

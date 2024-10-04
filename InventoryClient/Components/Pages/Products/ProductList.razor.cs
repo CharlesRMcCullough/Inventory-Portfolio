@@ -70,15 +70,15 @@ public partial class ProductList : ComponentBase
 
     private void OnEdit(int id)
     {
-       // Navigation.NavigateTo($"/CategoryEdit/{id}/1");
+        Navigation.NavigateTo($"/ProductEdit/{id}/1");
     }
     private void OnView(int id)
     {
-     //   Navigation.NavigateTo($"/CategoryEdit/{id}/0");
+        Navigation.NavigateTo($"/ProductEdit/{id}/0");
     }
 
     private void OnAdd()
     {
-       // Navigation.NavigateTo("/CategoryEdit/0/2");
+        Navigation.NavigateTo("/ProductEdit/0/2");
     }
 }

@@ -16,6 +16,6 @@ public class ProductListViewModel
     public string? MakeName { get; set; }
     public int ModelId { get; set; }
     public string? ModelName { get; set; }
-    public byte Status { get; set; }
+    public bool Status { get; set; }
 
 }
