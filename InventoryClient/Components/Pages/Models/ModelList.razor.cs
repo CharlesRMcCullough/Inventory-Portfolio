@@ -8,7 +8,7 @@ public partial class ModelList : ComponentBase
 {
     private IEnumerable<ModelListViewModel>? Models  { get; set; }
     private bool _isLoading;
-    private int selectedMake;
+    private int _selectedMake;
     
     protected override async Task OnInitializedAsync()
     {
@@ -91,7 +91,7 @@ public partial class ModelList : ComponentBase
         {
             _isLoading = true;
             Models = await Integration.GetModelsByMakeIdAsync(makeId);
-            selectedMake = makeId;
+            _selectedMake = makeId;
             StateHasChanged();
         }
         catch (Exception e)

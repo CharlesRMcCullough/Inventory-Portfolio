@@ -16,6 +16,7 @@ builder.Services.AddScoped<ICategoryIntegration, CategoryIntegration>();
 builder.Services.AddScoped<IMakeIntegration, MakeIntegration>();
 builder.Services.AddScoped<IModelIntegration, ModelIntegration>();
 builder.Services.AddScoped<IProductIntegration, ProductIntegration>();
+builder.Services.AddScoped<IItemIntegration, ItemIntegration>();
 
 var app = builder.Build();
 

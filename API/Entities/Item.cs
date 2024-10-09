@@ -13,6 +13,7 @@ public class Item
     public DateTime? CheckOutDate { get; set; }
     public decimal Price { get; set; }
     public string? Notes { get; set; }
+    public bool Status { get; set; }
     
     public int ProductId { get; set; }
     public Product Product { get; set; } = null!;

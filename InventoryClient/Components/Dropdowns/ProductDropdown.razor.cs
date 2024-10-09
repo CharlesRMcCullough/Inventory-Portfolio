@@ -12,6 +12,7 @@ public partial class ProductDropdown : ComponentBase
     public int SelectedIndex { get; set;}
 
     [Parameter] public bool Required { get; set; } 
+    [Parameter] public bool Search { get; set; }
     
     [Parameter]
     public EventCallback<int> OnProductChanged { get; set; }

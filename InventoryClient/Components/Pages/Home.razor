@@ -2,12 +2,14 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Inventory Management</MudText>
-<MudText Class="mb-8">Welcome to your new app, powered by MudBlazor and the .NET 8 Template!</MudText>
+<div class="d-flex justify-center align-center vh-100">
+    <MudText Typo="Typo.h3" GutterBottom="true">Inventory Management</MudText>
+    <MudText Class="mb-8">Welcome to your new app, powered by MudBlazor and the .NET 8 Template!</MudText>
+</div>
 
 <MudGrid Spacing="14" Justify="Justify.Center">
     <MudItem>
-        <MudCard Outlined="true">
+        <MudCard Outlined="true" >
             <MudCardContent>
                 <MudText>Products</MudText>
                 <MudText Typo="Typo.body2">Edit or add products</MudText>
@@ -18,7 +20,7 @@
         </MudCard>
     </MudItem>
     <MudItem>
-        <MudCard Outlined="true">
+        <MudCard Outlined="true" >
             <MudCardContent>
                 <MudText>Categories</MudText>
                 <MudText Typo="Typo.body2">Edit or add categories</MudText>
@@ -29,7 +31,7 @@
         </MudCard>
     </MudItem>
     <MudItem>
-        <MudCard Outlined="true">
+        <MudCard Outlined="true" >
             <MudCardContent>
                 <MudText>Categories</MudText>
                 <MudText Typo="Typo.body2">Edit or add makes</MudText>
@@ -40,13 +42,15 @@
         </MudCard>
     </MudItem>
     <MudItem>
-        <MudCard Outlined="true">
+        <MudCard Outlined="true" >
             <MudCardContent>
-                <MudText>Models</MudText>
-                <MudText Typo="Typo.body2">Edit or add models</MudText>
+                <MudText>Items</MudText>
+                <MudText Typo="Typo.body2">Edit or add Inventory Items</MudText>
             </MudCardContent>
             <MudCardActions>
-                <MudButton Variant="Variant.Text" Color="Color.Primary">Products</MudButton>
+                <MudButton Variant="Variant.Text" Color="Color.Primary">
+                    <MudLink href="/items">Items</MudLink>
+                </MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>

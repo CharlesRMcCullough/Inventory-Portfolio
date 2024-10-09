@@ -1,28 +1,28 @@
-@page "/Models"
+@page "/Items"
 @using InventoryClient.Integrations.Interfaces
 @using InventoryClient.Components.Dropdowns
 @inject NavigationManager Navigation
-@inject IModelIntegration Integration
+@inject IItemIntegration Integration
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
-<PageTitle>Models</PageTitle>
+<PageTitle>Items</PageTitle>
 
 <MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
-    <MudText Typo="Typo.h4" GutterBottom="true">Models</MudText>
+    <MudText Typo="Typo.h4" GutterBottom="true">Product</MudText>
     <MudGrid Spacing="12" Class="mt-4">
         <MudItem xs="10">
             <MudItem xs="6">
-                <MakeDropdown
+                <ProductDropdown
                     Disabled="false"
                     Search="true"
-                    SelectedIndex="@_selectedMake"
-                    OnMakeChanged="OnMakeChange"/>
+                    SelectedIndex="@_selectedProduct"
+                    OnProductChanged="OnProductChange"/>
             </MudItem>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Model</MudButton>
-                    <MudDataGrid Items="@Models">
+                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Item</MudButton>
+                    <MudDataGrid Items="@Items">
                         <Columns>
                             <PropertyColumn Property="x => x.MakeName" Title="Make" Filterable="true"/>
                             <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>

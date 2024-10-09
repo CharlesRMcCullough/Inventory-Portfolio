@@ -12,7 +12,6 @@ namespace API.Logic;
 
 public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProductLogic
 {
-
     public async Task<List<ProductDto>> GetProductsAsync()
     {
         try

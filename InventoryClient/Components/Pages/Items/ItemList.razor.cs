@@ -2,29 +2,31 @@ using InventoryClient.ViewModels;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 
-namespace InventoryClient.Components.Pages.Products;
+namespace InventoryClient.Components.Pages.Items;
 
-public partial class ProductList : ComponentBase
+public partial class ItemList : ComponentBase
 {
-    private IEnumerable<ProductListViewModel>? Products { get; set; }
+    private IEnumerable<ItemListViewModel>? Items { get; set; }
     private bool _isLoading;
+    private int _selectedProduct;
     
     protected override async Task OnInitializedAsync()
     {
-        await GetProductsAsync();
+        await Task.CompletedTask;
+        //await LoadItemsAsync(_selectedProduct);
     }
     
-    private async Task GetProductsAsync()
+    private async Task LoadItemsAsync(int productId)
     {
         try
         {
             _isLoading = true;
-            Products = await Integration.GetProductsAsync();
+            Items = await Integration.GetItemsByProductId(productId);
             StateHasChanged();
         }
         catch (Exception e)
         {
-            Snackbar.Add($"Unable to load products! {e.Message}", Severity.Error);
+            Snackbar.Add($"Unable to load items! {e.Message}", Severity.Error);
         }
         finally
         {
@@ -36,7 +38,7 @@ public partial class ProductList : ComponentBase
     {
         var parameters = new DialogParameters<DeleteDialog>
         {
-            { x => x.ContentText, "Do you really want to delete this product?" },
+            { x => x.ContentText, "Do you really want to delete this item?" },
             { x => x.ButtonText, "Delete" },
             { x => x.Color, Color.Error }
         };
@@ -51,7 +53,7 @@ public partial class ProductList : ComponentBase
             try
             {
                 _isLoading = true;
-                await Integration.DeleteProductAsync(id);
+        //        await Integration.DeleteProductAsync(id);
                 Snackbar.Add("Delete successful!", Severity.Success);
             }
             catch (Exception e)
@@ -65,20 +67,39 @@ public partial class ProductList : ComponentBase
             
         }
             
-        await GetProductsAsync();
+        await LoadItemsAsync(1);
+    }
+    
+    private async Task OnProductChange(int productId)
+    {
+        try
+        {
+            _isLoading = true;
+            Items = await Integration.GetItemsByProductId(productId);
+            _selectedProduct = productId;
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Unable to load items! {e.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 
     private void OnEdit(int id)
     {
-        Navigation.NavigateTo($"/ProductEdit/{id}/1");
+        //Navigation.NavigateTo($"/ProducEdit/{id}/1");
     }
     private void OnView(int id)
     {
-        Navigation.NavigateTo($"/ProductEdit/{id}/0");
+      //  Navigation.NavigateTo($"/ProductEdit/{id}/0");
     }
 
     private void OnAdd()
     {
-        Navigation.NavigateTo("/ProductEdit/0/2");
+        //Navigation.NavigateTo("/ProductEdit/0/2");
     }
 }
