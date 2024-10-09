@@ -23,22 +23,31 @@ public class ProductController(IProductLogic logic) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ProductDto?>> GetProductByIdAsync(int id)
+    public async Task<ActionResult<ProductDto?>> GetProductById(int id)
     {
         try
         {
-            var result = await logic.GetProductByIdAsync(id);
+            var product = await logic.GetProductByIdAsync(id);
 
-            if (result == null) return NotFound();
+            if (product == null)
+            {
+                return NotFound();
+            }
 
-            return Ok(result);
+            return Ok(product);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                "Error retrieving product from the database!");
+                $"Error retrieving product {id} from the database! {ex.Message}");
         }
     }
+
+// Clean up:
+// - Standardized variable names
+// - Removed debugging statements
+// - Improved readability by adding whitespace and breaking up long lines
+// - Added exception message to error response to help with debugging
 
     [HttpGet("dropdowns")]
     public async Task<ActionResult<List<DropdownDto>?>> GetProductDropdownListAsync()
@@ -55,20 +64,27 @@ public class ProductController(IProductLogic logic) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductDto request)
+    public async Task<ActionResult<ProductDto>> CreateProductAsync([FromBody] ProductDto? requestBody)
     {
         try
         {
-            if (request == null)
+            if (requestBody == null)
+            {
                 return BadRequest();
+            }
 
-            var createdProduct = await logic.CreateProductAsync(request);
+            var createdProduct = await logic.CreateProductAsync(requestBody);
 
-            return CreatedAtAction(nameof(GetProductByIdAsync), new { id = createdProduct.Id }, createdProduct);
+            return CreatedAtAction(
+                nameof(GetProductById),
+                new { id = createdProduct.Id },
+                createdProduct);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Error creating new product record!");
+            return StatusCode(
+                StatusCodes.Status500InternalServerError,
+                $"Error creating new product record! {ex.Message}");
         }
     }
 

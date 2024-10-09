@@ -15,7 +15,12 @@ public partial class CategoryDropdown : ComponentBase
     [Parameter]
     public int SelectedIndex { get; set;}
 
-    [Parameter] public bool Required { get; set; } = false;
+    [Parameter] 
+    public bool Required { get; set; } = false;
+    
+    [Parameter]
+    public bool Search { get; set; }
+    
     
     [Parameter]
     public EventCallback<int> OnCategoryChanged { get; set; }
@@ -31,6 +36,7 @@ public partial class CategoryDropdown : ComponentBase
     private async Task GetCategories()
     {
         Categories = await Integration.GetCategoriesForDropdownsAsync();
+        StateHasChanged();
     }
 
     private void OnSelectChanged(int categoryId)

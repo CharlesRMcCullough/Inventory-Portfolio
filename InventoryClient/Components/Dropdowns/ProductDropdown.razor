@@ -15,10 +15,9 @@
 
     @if (Products != null)
     {
-    foreach (var product in Products)
-    {
-    <MudSelectItem Value="@product.Id">@product.Name</MudSelectItem>
-    }
+        foreach (var product in Products)
+        {
+            <MudSelectItem Value="@product.Id">@product.Name</MudSelectItem>
+        }
     }
 </MudSelect>
-

@@ -11,7 +11,15 @@
     HelperText="Choose a Model"
     HelperTextOnFocus="true">
 
-    <MudSelectItem Value="0">All Categories</MudSelectItem>
+    @if (Search)
+    {
+        <MudSelectItem Value="0">All Models</MudSelectItem>
+    }
+    else
+    {
+        <MudSelectItem Value="0">Select Model</MudSelectItem>
+    }
+
 
     @if (Models != null)
     {

@@ -64,9 +64,9 @@ public class ModelIntegration : IModelIntegration
         return returnModels;
     }
     
-    public async Task<IEnumerable<DropdownViewModel>> GetModelsForDropdownsAsync()
+    public async Task<IEnumerable<DropdownViewModel>> GetModelsForDropdownsAsync(int makeId = 0)
     {
-        var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
+        var response = await HttpClient.GetAsync($"{ApiBase}/dropdowns/{makeId}");
         var returnModels = new List<DropdownViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -87,7 +87,7 @@ public class ModelIntegration : IModelIntegration
             Id = updatedModel.Id,
             Name = updatedModel.Name,
             Description = updatedModel.Description,
-            Status = Convert.ToByte(updatedModel.Status ? 1 : 0),
+            Status = updatedModel.Status,
             MakeId = updatedModel.MakeId
         };
         
@@ -109,7 +109,7 @@ public class ModelIntegration : IModelIntegration
             Id = modelToAdd.Id,
             Name = modelToAdd.Name,
             Description = modelToAdd.Description,
-            Status = Convert.ToByte(1)
+            Status = modelToAdd.Status,
         };
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(modelDto), Encoding.UTF8, "application/json");

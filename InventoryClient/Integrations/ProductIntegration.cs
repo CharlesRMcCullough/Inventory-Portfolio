@@ -34,19 +34,17 @@ public class ProductIntegration : IProductIntegration
     
     public async Task<ProductListViewModel> GetProductByIdAsync(int id)
     {
-        var response = await HttpClient.GetAsync($"{ApiBase}/{id}");
-        var returnProduct = new ProductListViewModel();
-        if (response.IsSuccessStatusCode)
+        var getProductResponse = await HttpClient.GetAsync($"{ApiBase}/{id}");
+
+        if (getProductResponse.IsSuccessStatusCode)
         {
-            var data = response.Content.ReadAsStringAsync().Result;
-            returnProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
+            var productData = await getProductResponse.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ProductListViewModel>(productData);
         }
 
-        if (returnProduct == null)
-            return new ProductListViewModel();
-
-        return returnProduct;
+        return new ProductListViewModel();
     }
+    
     
     public async Task<IEnumerable<DropdownViewModel>> GetProductsForDropdownsAsync()
     {
@@ -79,7 +77,13 @@ public class ProductIntegration : IProductIntegration
             Id = productToUpdate.Id,
             Name = productToUpdate.Name,
             Description = productToUpdate.Description,
-            Status = Convert.ToByte(productToUpdate.Status ? 1 : 0),
+            CategoryId = productToUpdate.CategoryId,
+            MakeId = productToUpdate.MakeId,
+            Price = productToUpdate.Price,
+            Quantity = 0,
+            ModelId = productToUpdate.ModelId,
+            Notes = productToUpdate.Notes,
+            Status = productToUpdate.Status,
         };
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");
@@ -96,20 +100,35 @@ public class ProductIntegration : IProductIntegration
     {
         var productDto = new ProductDto()
         {
-            Id = productToAdd.Id,
             Name = productToAdd.Name,
             Description = productToAdd.Description,
-            Status = Convert.ToByte(1)
+            CategoryId = productToAdd.CategoryId,
+            MakeId = productToAdd.MakeId,
+            Price = productToAdd.Price,
+            Quantity = 0,
+            ModelId = productToAdd.ModelId,
+            Notes = productToAdd.Notes,
+            Status = true
         };
-        
-        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");
-        
-        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
-        
-        var data = response.Content.ReadAsStringAsync().Result;
-        var returnProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
-        
-        return returnProduct ?? new ProductListViewModel();
+
+        try
+        {
+
+            using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8,
+                "application/json");
+
+            var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+
+            var data = response.Content.ReadAsStringAsync().Result;
+            var returnProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
+        } catch (Exception ex)
+        {
+            //Log.Error(ex, $"Error creating product - CreateProductAsync {ex.Message}");
+            var a = ex.Message;
+            throw;
+        }
+
+        return new ProductListViewModel();
     }
 
     public async Task DeleteProductAsync(int id)

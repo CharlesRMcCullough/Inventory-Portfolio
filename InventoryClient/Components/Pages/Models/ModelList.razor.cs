@@ -8,7 +8,7 @@ public partial class ModelList : ComponentBase
 {
     private IEnumerable<ModelListViewModel>? Models  { get; set; }
     private bool _isLoading;
-    private int selectedMake = 0;
+    private int selectedMake;
     
     protected override async Task OnInitializedAsync()
     {

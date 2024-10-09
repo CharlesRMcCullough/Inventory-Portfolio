@@ -51,7 +51,7 @@ public partial class ProductList : ComponentBase
             try
             {
                 _isLoading = true;
-            //    await Integration.DeleteCategoryAsync(id);
+                await Integration.DeleteProductAsync(id);
                 Snackbar.Add("Delete successful!", Severity.Success);
             }
             catch (Exception e)

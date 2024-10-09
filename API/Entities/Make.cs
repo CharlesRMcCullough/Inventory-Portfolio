@@ -11,7 +11,7 @@ public class Make
     public string? Description { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public byte Status { get; set; }
+    public bool Status { get; set; }
     public int CategoryId { get; set; }
     public Category Category { get; set; } = null!;
 

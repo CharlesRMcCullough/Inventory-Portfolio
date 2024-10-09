@@ -58,12 +58,12 @@ public class MakeController(IMakeLogic logic) : ControllerBase
         }
     }
     
-    [HttpGet("dropdowns")]
-    public async Task<ActionResult<List<DropdownDto>?>> GetMakeDropdownList()
+    [HttpGet("dropdowns/{categoryId:int}")]
+    public async Task<ActionResult<List<DropdownDto>?>> GetMakeDropdownList(int categoryId)
     {
         try
         {
-            return await logic.GetMakesForDropdownAsync();
+            return await logic.GetMakesForDropdownAsync(categoryId);
         }
         catch (Exception)
         {

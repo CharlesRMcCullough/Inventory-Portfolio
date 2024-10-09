@@ -15,11 +15,13 @@ public class Product
     public string? Notes { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     public DateTime CreateAt { get; set; } = DateTime.UtcNow;
-    public byte Status { get; set; }
+    public bool Status { get; set; }
     public int MakeId { get; set; }
     public int ModelId { get; set; }
     public int CategoryId { get; set; }
     public Make? Make { get; set; }
     public Model? Model { get; set; }
     public Category? Category{ get; set; }
+    
+    public Item? Item { get; set; } = null!; // Navigation Property
 }

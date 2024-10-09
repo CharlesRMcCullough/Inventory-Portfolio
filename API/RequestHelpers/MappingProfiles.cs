@@ -20,7 +20,17 @@ public class MappingProfiles : Profile
         CreateMap<ModelDto, Model>();
         CreateMap<Model, ModelDto>();
         CreateMap<ProductDto, Product>();
-        CreateMap<Product, ProductDto>();
+        CreateMap<Product, ProductDto>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
+            .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.CategoryId))
+            .ForMember(dest => dest.MakeId, opt => opt.MapFrom(src => src.MakeId))
+            .ForMember(dest => dest.ModelId, opt => opt.MapFrom(src => src.ModelId))
+            .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Price))
+            .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes));
 
     }
     

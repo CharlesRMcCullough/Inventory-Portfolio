@@ -64,10 +64,10 @@ public class MakeIntegration : IMakeIntegration
         return returnMake;
     }
     
-    public async Task<IEnumerable<DropdownViewModel>> GetMakesForDropdownsAsync()
+    public async Task<IEnumerable<DropdownViewModel>> GetMakesForDropdownsAsync(int categoryId = 0)
     {
-        var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
-        var returnMakes = new List<DropdownViewModel>();
+        var response = await HttpClient.GetAsync($"{ApiBase}/dropdowns/{categoryId}");
+        var returnMakes = new List<DropdownViewModel>(categoryId);
         if (response.IsSuccessStatusCode)
         {
             var data = response.Content.ReadAsStringAsync().Result;
@@ -87,7 +87,7 @@ public class MakeIntegration : IMakeIntegration
             Id = updatedMake.Id,
             Name = updatedMake.Name,
             Description = updatedMake.Description,
-            Status = Convert.ToByte(updatedMake.Status ? 1 : 0),
+            Status = updatedMake.Status,
             CategoryId = updatedMake.CategoryId
         };
 
@@ -109,7 +109,7 @@ public class MakeIntegration : IMakeIntegration
             Id = makeToAdd.Id,
             Name = makeToAdd.Name,
             Description = makeToAdd.Description,
-            Status = Convert.ToByte(1)
+            Status = makeToAdd.Status
         };
 
         using StringContent jsonContent =

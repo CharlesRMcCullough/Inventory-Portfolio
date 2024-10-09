@@ -5,6 +5,7 @@ using API.Data;
 using API.Logic.Interfaces;
 using Serilog;
 using API.Entities;
+using API.Exceptions;
 using AutoMapper.QueryableExtensions;
 
 namespace API.Logic;
@@ -17,7 +18,7 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
         try
         {
             return await context.Products
-                .Where(p => p.Status == 1)
+                .Where(p => p.Status == true)
                 .Include(c => c.Category)
                 .Include(m => m.Model)
                 .Include(ma => ma.Make)
@@ -36,7 +37,7 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
         try
         {
             return await context.Products
-                .Where(p => p.Id == id && p.Status == 1)
+                .Where(p => p.Id == id && p.Status == true)
                 .Include(c => c.Category)
                 .Include(m => m.Model)
                 .Include(ma => ma.Make)
@@ -46,17 +47,17 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
         catch (Exception ex)
         {
             Log.Error(ex, $"Error getting product by id - GetProductByIdAsync {ex.Message}");
-            return null;
+            throw;
 
         }
     }
 
-    public async Task<List<DropdownDto>?> GetProductsForDropdownAsync()
+    public async Task<List<DropdownDto>> GetProductsForDropdownAsync()
     {
         try
         {
             return await (from product in context.Products
-                          where product.Status == 1
+                          where product.Status == true
                           orderby product.Name
                           select new DropdownDto
                           {
@@ -67,33 +68,36 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
         catch (Exception ex)
         {
             Log.Error(ex, $"Error getting products for dropdown - GetProductsForDropdownAsync {ex.Message}");
-            return null;
+            throw;
         }
     }
 
-    public async Task<ProductDto?> CreateProductAsync(ProductDto productDto)
+    public async Task<ProductDto> CreateProductAsync(ProductDto productDto)
     {
         try
         {
-            var recordToCreate = mapper.Map<Product>(productDto);
-            var result = await context.Products.AddAsync(recordToCreate);
+            var productToCreate = mapper.Map<Product>(productDto);
+            var createdProduct = await context.Products.AddAsync(productToCreate);
             await context.SaveChangesAsync();
-            return mapper.Map<ProductDto>(result.Entity);
+            return mapper.Map<ProductDto>(createdProduct.Entity);
         }
         catch (Exception ex)
         {
-            Log.Error(ex, $"Error creating product for - CreateProductAsync {ex.Message}");
-            return null;
+            Log.Error(ex, "Error creating product - CreateProductAsync");
+            throw;
         }
     }
 
-    public async Task<ProductDto?> UpdateProductAsync(ProductDto productDto)
+    public async Task<ProductDto> UpdateProductAsync(ProductDto productDto)
     {
         try
         {
             var response = await context.Products.FindAsync(productDto.Id);
 
-            if (response == null) return null;
+            if (response == null)
+            {
+                throw new CustomExceptions.NotFoundException($"Model with id {productDto.Id} was not found");
+            }
 
             response.Id = productDto.Id;
             response.Name = productDto.Name;
@@ -113,7 +117,7 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
         catch (Exception ex)
         {
             Log.Error(ex, $"Error creating product for - CreateProductAsync {ex.Message}");
-            return null;
+            throw;
         }
     }
     public async Task DeleteProductsAsync(int id)
@@ -123,15 +127,18 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
             var response = await context.Products.Where(p => p.Id == id)
                 .FirstOrDefaultAsync();
 
-            if (response != null)
+            if (response == null)
             {
-                context.Products.Remove(response);
-                await context.SaveChangesAsync();
+                throw new CustomExceptions.NotFoundException($"Model with id {id} was not found");
             }
+            
+            context.Products.Remove(response);
+            await context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
             Log.Error(ex, $"Error deleting product for - DeleteProductsAsync {ex.Message}");
+            throw;
         }
     }
 }

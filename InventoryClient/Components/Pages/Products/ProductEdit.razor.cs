@@ -1,3 +1,4 @@
+using InventoryClient.Components.Dropdowns;
 using InventoryClient.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -17,6 +18,9 @@ public partial class ProductEdit : ComponentBase
     private ProductListViewModel ViewModel { get; set; } = new ProductListViewModel();
     private string _productPrompt = string.Empty;
     private bool _isLoading = false;
+    public bool CategoryDisabled { get; set; } = true;
+    public bool MakeDisabled { get; set; }
+    public bool ModelDisabled { get; set; }
 
         protected override async Task OnParametersSetAsync()
     {
@@ -28,14 +32,27 @@ public partial class ProductEdit : ComponentBase
             ViewModel.Description = product.Description;
             ViewModel.Status = product.Status;
             ViewModel.CategoryId = product.CategoryId;
+            ViewModel.MakeId = product.MakeId;
+            ViewModel.ModelId = product.ModelId;
             ViewModel.Quantity = product.Quantity;
             ViewModel.Price = product.Price;
+            ViewModel.Notes = product.Notes;
+
+            CategoryDisabled = false;
+            ModelDisabled = false;
+            MakeDisabled = false;
+        }
+        else
+        {
+            CategoryDisabled = false;
+            MakeDisabled = true;
+            ModelDisabled = true;
         }
         
         _productPrompt = IsAdd ? "Product Add" : $"Product: {ViewModel.Name}";
     }
 
-         private async Task OnValidSubmit(EditContext context)
+    private async Task OnValidSubmit(EditContext context)
     {
         if (IsAdd)
         {
@@ -92,6 +109,21 @@ public partial class ProductEdit : ComponentBase
     private async Task OnCategoryChange(int categoryId)
     {
         ViewModel.CategoryId = categoryId;
+        MakeDisabled = false;
+        ModelDisabled = true;
+        ViewModel.MakeId = 0;
+        await Task.CompletedTask;
+    }
+    private async Task OnMakeChange(int makeId)
+    {
+        ViewModel.MakeId = makeId;
+        ModelDisabled = false;
+        ViewModel.ModelId = 0;
+        await Task.CompletedTask;
+    }
+    private async Task OnModelChange(int modelId)
+    {
+        ViewModel.ModelId = modelId;
         await Task.CompletedTask;
     }
 }

@@ -14,4 +14,5 @@ public class InventoryDbContext : DbContext
     public DbSet<Make> Make { get; set; }
     public new DbSet<Model> Model { get; set; }
     public DbSet<Category> Category { get; set; }
+    public DbSet<Item> Item { get; set; }
 }

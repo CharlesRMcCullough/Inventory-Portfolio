@@ -17,7 +17,7 @@
                             Disabled="IsAdd || IsView"
                             Required="true"
                             SelectedIndex="@ViewModel.MakeId"
-                            OnMakeChanged="OnMakeChange"/>
+                            OnMakeChanged="OnMakeChange" />
                         <MudTextField Label="Name" HelperText="Model Name" HelperTextOnFocus="true"
                                       @bind-Value="ViewModel.Name" Disabled=@IsView For="@(() => ViewModel.Name)"/>
                         <MudTextField Label="Description" Disabled=@IsView HelperText="Model Description" HelperTextOnFocus="true"

@@ -16,5 +16,5 @@ public class ProductDto
     public string? ModelName { get; set; }
     public int MakeId { get; set; }
     public string? MakeName { get; set; }
-    public byte Status { get; set; }
+    public bool Status { get; set; }
 }

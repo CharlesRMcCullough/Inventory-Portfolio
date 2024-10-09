@@ -73,7 +73,7 @@ public class CategoryIntegration : ICategoryIntegration
             Id = updatedCategory.Id,
             Name = updatedCategory.Name,
             Description = updatedCategory.Description,
-            Status = Convert.ToByte(updatedCategory.Status ? 1 : 0)
+            Status = updatedCategory.Status
         };
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(categoryDto), Encoding.UTF8, "application/json");
@@ -93,7 +93,7 @@ public class CategoryIntegration : ICategoryIntegration
             Id = categoryToAdd.Id,
             Name = categoryToAdd.Name,
             Description = categoryToAdd.Description,
-            Status = Convert.ToByte(1)
+            Status = categoryToAdd.Status
         };
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(categoryDto), Encoding.UTF8, "application/json");

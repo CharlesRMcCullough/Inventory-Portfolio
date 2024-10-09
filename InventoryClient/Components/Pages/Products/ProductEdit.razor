@@ -1,6 +1,6 @@
 @page "/ProductEdit/{id:int}/{mode:int}"
-@using InventoryClient.Integrations
 @using InventoryClient.Integrations.Interfaces
+@using InventoryClient.Components.Dropdowns
 @inject IProductIntegration Integration
 @inject NavigationManager Navigation
 @inject ISnackbar Snackbar
@@ -13,20 +13,40 @@
             <MudItem xs="12" sm="7">
                 <MudCard>
                     <MudCardContent>
-@*                         <MakeDropdown
-                            Disabled="IsAdd || IsView"
+                        <CategoryDropdown
+                            Disabled="CategoryDisabled || IsView"
                             Required="true"
+                            Search="false"
+                            SelectedIndex="@ViewModel.CategoryId"
+                            OnCategoryChanged="OnCategoryChange"/>
+                        <MakeDropdown
+                            Disabled="MakeDisabled  || IsView"
+                            Required="true"
+                            Search="false"
+                            CategoryId="@ViewModel.CategoryId"
                             SelectedIndex="@ViewModel.MakeId"
-                            OnMakeChanged="OnMakeChange"/> *@
+                            OnMakeChanged="OnMakeChange" />
+                        <ModelDropdown
+                            Disabled="ModelDisabled  || IsView"
+                            Required="true"
+                            Search="false"
+                            MakeId="@ViewModel.MakeId"
+                            SelectedIndex="@ViewModel.ModelId"
+                            OnModelChanged="OnModelChange"/>
                         <MudTextField Label="Name" HelperText="Model Name" HelperTextOnFocus="true"
                                       @bind-Value="ViewModel.Name" Disabled=@IsView For="@(() => ViewModel.Name)"/>
                         <MudTextField Label="Description" Disabled=@IsView HelperText="Model Description" HelperTextOnFocus="true"
                                       Class="mt-3 mb-5" @bind-Value="ViewModel.Description" For="@(() => ViewModel.Description)"/>
-                        <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Quantity" Label="Quantity" Variant="Variant.Text"
-                                        HelperText="Product Quantity" />
-                        <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Price" Label="Price" Variant="Variant.Text"
-                                        HelperText="Product Price" Format="C2"/>
-                        <MudTextField Label="Price" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
+
+                        <div class="d-flex justify-content-between">
+                                    <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Quantity" Label="Quantity" Variant="Variant.Text"
+                                                     HelperText="Product Quantity" HelperTextOnFocus="true" Disabled="IsView || IsAdd"/>
+
+                                    <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Price" Label="Price" Variant="Variant.Text"
+                                                     HelperText="Product Price" HelperTextOnFocus="true" Disabled="@IsView"
+                                                     For="@(() => ViewModel.Price)"/>
+                        </div>
+                        <MudTextField Label="Notes" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
                                       Class="mt-3 mb-5" @bind-Value="ViewModel.Notes" For="@(() => ViewModel.Notes)"/>
                         @if (!IsAdd)
                         {
@@ -42,10 +62,13 @@
                         }
                     </MudCardContent>
                     <MudCardActions>
-                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
-                                   Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>
-                        @if (!IsView) {
-                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Save</MudButton>
+                        <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default"
+                                   Class="ml-auto" OnClick="@OnCancel">
+                            Cancel
+                        </MudButton>
+                        @if (!IsView)
+                        {
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
                         }
 
                     </MudCardActions>
@@ -54,6 +77,6 @@
         </MudGrid>
     </EditForm>
     <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
-        <MudProgressCircular Color="Color.Info" Indeterminate="true" />
+        <MudProgressCircular Color="Color.Info" Indeterminate="true"/>
     </MudOverlay>
 </MudContainer>

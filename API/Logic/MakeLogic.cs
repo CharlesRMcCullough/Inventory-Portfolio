@@ -5,17 +5,18 @@ using API.Logic.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using API.Exceptions;
 
 namespace API.Logic;
 
 public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
 {
-    public async Task<List<MakeDto>?> GetMakesAsync()
+    public async Task<List<MakeDto>> GetMakesAsync()
     {
         try
         {
             return await context.Make
-                .Where(p => p.Status == 1)
+                .Where(p => p.Status == true)
                 .Join(
                     context.Category, // Inner sequence (the table to join with)
                     make => make.CategoryId, // Outer key selector (Make's CategoryId)
@@ -37,18 +38,18 @@ public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
         catch (Exception ex)
         {
             Log.Error(ex, "Error getting makes- GetMakesAsync");
-            return null;
+            throw;
         }
     }
 
-    public async Task<List<MakeDto>?> GetMakesByCategoryIdAsync(int categoryId)
+    public async Task<List<MakeDto>> GetMakesByCategoryIdAsync(int categoryId)
     {
         try
         {
             return await (from make in context.Make
                 join category in context.Category
                     on make.CategoryId equals category.Id
-                where (categoryId == 0 || make.CategoryId == categoryId) && make.Status == 1
+                where (categoryId == 0 || make.CategoryId == categoryId) && make.Status == true
                 orderby make.Name
                 select new MakeDto
                 {
@@ -63,39 +64,39 @@ public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
         catch (Exception ex)
         {
             Log.Error(ex, "Error getting makes by category- GetMakesByCategoryIdAsync");
-            return null;
+            throw;
         }
     }
 
-    public async Task<MakeDto?> GetMakeByIdAsync(int id)
+    public async Task<MakeDto> GetMakeByIdAsync(int makeId)
     {
         try
         {
-            return await (from make in context.Make
-                where (make.Id == id && make.Status == 1)
-                orderby make.Name
-                select new MakeDto
+            return await context.Make
+                .Where(m => m.Id == makeId && m.Status == true)
+                .Select(m => new MakeDto
                 {
-                    Id = make.Id,
-                    Name = make.Name,
-                    Description = make.Description,
-                    Status = make.Status,
-                    CategoryId = make.CategoryId
-                }).FirstOrDefaultAsync() ?? new MakeDto();
+                    Id = m.Id,
+                    Name = m.Name,
+                    Description = m.Description,
+                    Status = m.Status,
+                    CategoryId = m.CategoryId
+                })
+                .FirstOrDefaultAsync() ?? new MakeDto();
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error getting make by id- GetMakeByIdAsync");
-            return null;
+            Log.Error(ex, "Error getting make by id");
+            throw;
         }
     }
     
-    public async Task<List<DropdownDto>?> GetMakesForDropdownAsync()
+    public async Task<List<DropdownDto>> GetMakesForDropdownAsync(int categoryId = 0)
     {
         try
         {
             return await (from make in context.Make
-                where make.Status == 1
+                where (categoryId == 0 || make.CategoryId == categoryId) && make.Status == true
                 orderby make.Name
                 select new DropdownDto
                 {
@@ -106,11 +107,11 @@ public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
         catch (Exception ex)
         {
             Log.Error(ex, "Error getting makes for dropdown- GetMakesForDropdownAsync");
-            return null;
+            throw;
         }
     }
 
-    public async Task<MakeDto?> CreateMakeAsync(MakeDto makeDto)
+    public async Task<MakeDto> CreateMakeAsync(MakeDto makeDto)
     {
         try
         {
@@ -123,17 +124,20 @@ public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
         catch (Exception ex)
         {
             Log.Error(ex, "Error creating make- CreateMakeAsync");
-            return null;
+            throw;
         }
     }
 
-    public async Task<MakeDto?> UpdateMakeAsync(MakeDto makeDto)
+    public async Task<MakeDto> UpdateMakeAsync(MakeDto makeDto)
     {
         try
         {
             var response = await context.Make.FindAsync(makeDto.Id);
 
-            if (response == null) return null;
+            if (response == null) 
+            {
+                throw new CustomExceptions.NotFoundException($"Make with id {makeDto.Id} was not found");
+            }
 
             response.Id = makeDto.Id;
             response.Name = makeDto.Name;
@@ -148,7 +152,7 @@ public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
         catch (Exception ex)
         {
             Log.Error(ex, "Error updating make- UpdateMakeAsync");
-            return null;
+            throw;
         }
     }
 
@@ -168,6 +172,7 @@ public class MakeLogic(InventoryDbContext context, IMapper mapper) : IMakeLogic
         catch (Exception ex)
         {
             Log.Error(ex, "Error deleting make- DeleteMakeAsync");
+            throw;
         }
     }
 }

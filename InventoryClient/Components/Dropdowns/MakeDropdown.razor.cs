@@ -9,26 +9,42 @@ public partial class MakeDropdown : ComponentBase
 
     [Parameter] public int SelectedIndex { get; set; }
 
-    [Parameter]
-    public bool Required { get; set; } = false;
+    [Parameter] public bool Required { get; set; }
+
+    [Parameter] public int CategoryId { get; set; }
+
+    [Parameter] public bool Search { get; set; }
 
     [Parameter] public EventCallback<int> OnMakeChanged { get; set; }
 
     private IEnumerable<DropdownViewModel>? Makes { get; set; }
+    private int _categoryId;
 
     protected override async Task OnInitializedAsync()
     {
-        await GetMakes();
+        await GetMakesAsync();
+        StateHasChanged();
     }
 
-    private async Task GetMakes()
+
+    protected override async Task OnParametersSetAsync()
     {
-        Makes = await Integration.GetMakesForDropdownsAsync();
+        if (CategoryId != _categoryId)
+        {
+            _categoryId = CategoryId;
+            await GetMakesAsync();
+        }
+        StateHasChanged();
     }
 
-    private void OnSelectChanged(int categoryId)
+    private async Task GetMakesAsync()
     {
-        OnMakeChanged.InvokeAsync(categoryId);
-        SelectedIndex = categoryId;
+        Makes = await Integration.GetMakesForDropdownsAsync(CategoryId);
+    }
+
+    private void OnSelectChanged(int makeId)
+    {
+        OnMakeChanged.InvokeAsync(makeId);
+        SelectedIndex = makeId;
     }
 }

@@ -10,7 +10,7 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
 {
     public async Task<List<CategoryDto>> GetCategoriesAsync()
     {
-        return await context.Category.Where(p => p.Status == 1)
+        return await context.Category.Where(p => p.Status == true)
             .OrderBy(p => p.Name)
             .Select(p => mapper.Map<CategoryDto>(p))
             .ToListAsync();
@@ -18,7 +18,7 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
     
     public async Task<CategoryDto?> GetCategoryByIdAsync(int id)
     {
-        var response = await context.Category.Where(p => p.Id == id && p.Status == 1)
+        var response = await context.Category.Where(p => p.Id == id && p.Status == true)
             .Select(p => mapper.Map<CategoryDto>(p))
             .FirstOrDefaultAsync();
         return response ?? new CategoryDto();
@@ -26,7 +26,7 @@ public class CategoryLogic(InventoryDbContext context, IMapper mapper) : ICatego
 
     public async Task<List<DropdownDto>> GetCategoriesForDropdownAsync()
     {
-        return await context.Category.Where(c => c.Status == 1)
+        return await context.Category.Where(c => c.Status == true)
             .OrderBy(c => c.Name)
             .Select(c => new DropdownDto
                 {

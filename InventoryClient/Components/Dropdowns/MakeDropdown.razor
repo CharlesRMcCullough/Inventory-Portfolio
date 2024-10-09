@@ -11,13 +11,20 @@
     HelperText="Choose Make"
     HelperTextOnFocus="true">
 
-    <MudSelectItem Value="0">All Makes</MudSelectItem>
+    @if (Search)
+    {
+        <MudSelectItem Value="0">All Makes</MudSelectItem>
+    }
+    else
+    {
+        <MudSelectItem Value="0">Select Make</MudSelectItem>
+    }
 
     @if (Makes != null)
     {
-        foreach (var category in Makes)
+        foreach (var make in Makes)
         {
-            <MudSelectItem Value="@category.Id">@category.Name</MudSelectItem>
+            <MudSelectItem Value="@make.Id">@make.Name</MudSelectItem>
         }
     }
 </MudSelect>

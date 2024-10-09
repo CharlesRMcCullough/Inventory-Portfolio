@@ -1,6 +1,7 @@
 using API.Data;
 using API.DTOs;
 using API.Entities;
+using API.Exceptions;
 using API.Logic.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -11,14 +12,14 @@ namespace API.Logic;
 
 public class ModelLogic(InventoryDbContext context, IMapper mapper) : IModelLogic
 {
-    public async Task<List<ModelDto>?> GetModelsAsync()
+    public async Task<List<ModelDto>> GetModelsAsync()
     {
         try
         {
             return await (from model in context.Model
                 join make in context.Make
                     on model.MakeId equals make.Id
-                where model.Status == 1
+                where model.Status == true
                 orderby model.Name
                 select new ModelDto
                 {
@@ -33,7 +34,7 @@ public class ModelLogic(InventoryDbContext context, IMapper mapper) : IModelLogi
         catch (Exception ex)
         {
             Log.Error(ex, "Error getting models - GetModelsAsync");
-            return null;
+            throw;
         }
     }
 
@@ -42,23 +43,23 @@ public class ModelLogic(InventoryDbContext context, IMapper mapper) : IModelLogi
         try
         {
             return await (from model in context.Model
-                    where model.Status == 1 && model.Id == id
+                    where model.Status == true && model.Id == id
                     select mapper.Map<ModelDto>(model))
                 .FirstOrDefaultAsync();
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Error getting model by id - GetModelByIdAsync");
-            return null;
+            throw;
         }
     }
 
-    public async Task<List<DropdownDto>?> GetModelsForDropdownAsync()
+    public async Task<List<DropdownDto>> GetModelsForDropdownAsync(int makeId = 0)
     {
         try
         {
             return await (from model in context.Model
-                where model.Status == 1
+                where (makeId == 0 || model.MakeId == makeId && model.Status == true)
                 orderby model.Name
                 select new DropdownDto
                 {
@@ -69,18 +70,18 @@ public class ModelLogic(InventoryDbContext context, IMapper mapper) : IModelLogi
         catch (Exception ex)
         {
             Log.Error(ex, "Error getting models for dropdown - GetModelsForDropdownAsync");
-            return null;
+            throw;
         }
     }
-    
-    public async Task<List<ModelDto>?> GetModelsByMakeIdAsync(int makeId)
+
+    public async Task<List<ModelDto>> GetModelsByMakeIdAsync(int makeId)
     {
         try
         {
             return await (from model in context.Model
                 join make in context.Make
                     on model.MakeId equals make.Id
-                where (makeId == 0 || model.MakeId == makeId) && make.Status == 1
+                where (makeId == 0 || model.MakeId == makeId) && make.Status == true
                 orderby model.Name
                 select new ModelDto
                 {
@@ -95,7 +96,7 @@ public class ModelLogic(InventoryDbContext context, IMapper mapper) : IModelLogi
         catch (Exception ex)
         {
             Log.Error(ex, "Error getting models by make - GetMakesByCategoryIdAsync");
-            return null;
+            throw;
         }
     }
 
@@ -112,33 +113,27 @@ public class ModelLogic(InventoryDbContext context, IMapper mapper) : IModelLogi
         catch (Exception ex)
         {
             Log.Error(ex, "Error creating model - CreateModelAsync");
-            return null;
+            throw;
         }
     }
 
     public async Task<ModelDto?> UpdateModelAsync(ModelDto modelDto)
     {
-        try
+        var model = await context.Model.FindAsync(modelDto.Id);
+
+        if (model == null)
         {
-            var response = await context.Model.FindAsync(modelDto.Id);
-
-            if (response == null) return null;
-
-            response.Id = modelDto.Id;
-            response.Name = modelDto.Name;
-            response.Description = modelDto.Description;
-            response.Status = modelDto.Status;
-            response.MakeId = modelDto.MakeId;
-
-            await context.SaveChangesAsync();
-
-            return mapper.Map<ModelDto>(response);
+            throw new CustomExceptions.NotFoundException($"Model with id {modelDto.Id} was not found");
         }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error updating model - UpdateModelAsync");
-            return null;
-        }
+
+        model.Name = modelDto.Name;
+        model.Description = modelDto.Description;
+        model.Status = modelDto.Status;
+        model.MakeId = modelDto.MakeId;
+
+        await context.SaveChangesAsync();
+
+        return mapper.Map<ModelDto>(model);
     }
 
     public async Task DeleteModelAsync(int id)
@@ -148,15 +143,18 @@ public class ModelLogic(InventoryDbContext context, IMapper mapper) : IModelLogi
             var response = await context.Model.Where(p => p.Id == id)
                 .FirstOrDefaultAsync();
 
-            if (response != null)
+            if (response == null)
             {
-                context.Model.Remove(response);
-                await context.SaveChangesAsync();
+                throw new CustomExceptions.NotFoundException($"Model with id {id} was not found");
             }
+            
+            context.Model.Remove(response);
+            await context.SaveChangesAsync();
         }
         catch (Exception ex)
         {
             Log.Error(ex, "Error deleting model - DeleteModelAsync");
+            throw;
         }
     }
 }

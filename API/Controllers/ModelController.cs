@@ -58,12 +58,12 @@ public class ModelController(IModelLogic logic) : ControllerBase
         }
     }
 
-    [HttpGet("dropdowns")]
-    public async Task<ActionResult<List<DropdownDto>?>> GetModelDropdownListAsync()
+    [HttpGet("dropdowns/{makeId:int}")]
+    public async Task<ActionResult<List<DropdownDto>?>> GetModelDropdownListAsync(int makeId)
     {
         try
         {
-            return Ok(await logic.GetModelsForDropdownAsync());
+            return Ok(await logic.GetModelsForDropdownAsync(makeId));
         }
         catch (Exception)
         {

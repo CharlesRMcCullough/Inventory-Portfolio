@@ -11,7 +11,7 @@ public class Category
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    public byte Status { get; set; }
+    public bool Status { get; set; }
     
     public Category? ParentCategory { get; set; }
     
