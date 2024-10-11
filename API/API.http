@@ -28,3 +28,8 @@ Accept: application/json
 
 GET {{API_HostAddress}}/api/products/4
 Accept: application/json
+
+### Items
+
+GET {{API_HostAddress}}/api/items/1
+Accept: application/json

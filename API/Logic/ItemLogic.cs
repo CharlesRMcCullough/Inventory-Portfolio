@@ -38,8 +38,7 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
     
     public async Task<IReadOnlyList<ItemDto>> GetItemsByProductIdAsync(int id)
     {
-        
-        var a = await context.Item
+        return await context.Item
             .Where(i => i.ProductId == id && i.Status)
             .Join(context.Products, i => i.ProductId, p => p.Id, (i, p) => new ItemDto
             {
@@ -60,8 +59,6 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
             })
             .OrderBy(i => i.Name)
             .ToListAsync();
-
-        return a;
     }
     
     public async Task<ItemDto?> GetItemByIdAsync(int id)
