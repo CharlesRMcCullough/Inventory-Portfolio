@@ -1,6 +1,7 @@
 using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace InventoryClient.Integrations;
 
@@ -31,13 +32,24 @@ public class ItemIntegration : IItemIntegration
     {
         var response = await HttpClient.GetAsync($"{ApiBase}/{productId}");
 
-        if (response.IsSuccessStatusCode)
+        try
         {
-            var responseData = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<IReadOnlyList<ItemListViewModel>>(responseData) ?? Array.Empty<ItemListViewModel>();
-        }
+            response.EnsureSuccessStatusCode();
 
-        return Array.Empty<ItemListViewModel>();
+            var responseData = await response.Content.ReadAsStringAsync();
+            var items = JsonConvert.DeserializeObject<IReadOnlyList<ItemListViewModel>>(responseData) ?? Array.Empty<ItemListViewModel>();
+
+            foreach (var item in items)
+            {
+                item.IsCheckedOut = item.CheckOutDate != null;
+            }
+
+            return items;
+        }
+        catch (JsonException)
+        {
+            return Array.Empty<ItemListViewModel>();
+        }
     }
     
     public async Task<ItemListViewModel> GetItemByItemId(int itemId)

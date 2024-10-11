@@ -38,6 +38,31 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
     
     public async Task<IReadOnlyList<ItemDto>> GetItemsByProductIdAsync(int id)
     {
+        if (id == 0)
+        {
+            return await context.Item
+                .Where(i => i.Status)
+                .Join(context.Products, i => i.ProductId, p => p.Id, (i, p) => new ItemDto
+                {
+                    Id = i.Id,
+                    ProductId = p.Id,
+                    SerialNumber = i.SerialNumber,
+                    TagId = i.TagId,
+                    Name = p.Name ?? string.Empty,
+                    Description = p.Description ?? string.Empty,
+                    Status = i.Status,
+                    Price = i.Price,
+                    CategoryId = p.CategoryId,
+                    CategoryName = (p.Category != null) ? p.Category.Name : string.Empty,
+                    MakeId = p.MakeId,
+                    MakeName = (p.Make != null) ? p.Make.Name : string.Empty,
+                    ModelId = p.ModelId,
+                    ModelName = (p.Model != null) ? p.Model.Name : string.Empty
+                })
+                .OrderBy(i => i.Name)
+                .ToListAsync();
+        }
+
         return await context.Item
             .Where(i => i.ProductId == id && i.Status)
             .Join(context.Products, i => i.ProductId, p => p.Id, (i, p) => new ItemDto

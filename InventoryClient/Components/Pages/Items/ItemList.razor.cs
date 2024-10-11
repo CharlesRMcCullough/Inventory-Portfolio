@@ -8,12 +8,13 @@ public partial class ItemList : ComponentBase
 {
     private IEnumerable<ItemListViewModel>? Items { get; set; }
     private bool _isLoading;
-    private int _selectedProduct;
+    private int _selectedProduct = 0;
+    private string _searchText = string.Empty;
     
     protected override async Task OnInitializedAsync()
     {
         await Task.CompletedTask;
-        //await LoadItemsAsync(_selectedProduct);
+        await LoadItemsAsync(_selectedProduct);
     }
     
     private async Task LoadItemsAsync(int productId)

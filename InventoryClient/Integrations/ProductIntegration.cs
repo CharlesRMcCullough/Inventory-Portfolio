@@ -34,12 +34,13 @@ public class ProductIntegration : IProductIntegration
     
     public async Task<ProductListViewModel> GetProductByIdAsync(int id)
     {
-        var getProductResponse = await HttpClient.GetAsync($"{ApiBase}/{id}");
+        var response = await HttpClient.GetAsync($"{ApiBase}/{id}");
 
-        if (getProductResponse.IsSuccessStatusCode)
+        if (response.IsSuccessStatusCode)
         {
-            var productData = await getProductResponse.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<ProductListViewModel>(productData);
+            var productData = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<ProductListViewModel>(productData) ??
+                   new ProductListViewModel();
         }
 
         return new ProductListViewModel();

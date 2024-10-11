@@ -8,36 +8,62 @@
 
 <PageTitle>Items</PageTitle>
 
-<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
-    <MudText Typo="Typo.h4" GutterBottom="true">Product</MudText>
-    <MudGrid Spacing="12" Class="mt-4">
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraLarge">
+    <MudText Typo="Typo.h4" GutterBottom="true">Item</MudText>
+    <MudGrid Spacing="5" Class="mt-4" >
         <MudItem xs="10">
             <MudItem xs="6">
-                <ProductDropdown
-                    Disabled="false"
-                    Search="true"
-                    SelectedIndex="@_selectedProduct"
-                    OnProductChanged="OnProductChange"/>
+                <ProductDropdown Disabled="false" Search="true" SelectedIndex="@_selectedProduct"
+                                 OnProductChanged="OnProductChange" />
             </MudItem>
-            <MudGrid>
-                <MudItem xs="12">
-                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Item</MudButton>
+            <MudItem xs="12" Class="mt-5">
+                <MudGrid >
                     <MudDataGrid Items="@Items">
+                        <ToolBarContent>
+                            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary"
+                                                             Class="mb-5 ml-auto" OnClick="OnAdd">Add Item</MudButton>
+                            <MudSpacer />
+                            <MudTextField @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
                         <Columns>
-                            <PropertyColumn Property="x => x.MakeName" Title="Make" Filterable="true"/>
-                            <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
+                            <PropertyColumn Property="x => x.SerialNumber" Title="Serial Number" Filterable="true"/>
+                            <PropertyColumn Property="x => x.TagId" Title="Tag Id" Filterable="true"/>
+                            <PropertyColumn Property="x => x.Name" Title="Description" Filterable="true"/>
                             <PropertyColumn Property="x => x.Description" Title="Description"/>
+                            <PropertyColumn Property="x => x.Price" Format="C2" Title="Price"/>
+                            <TemplateColumn Title="Availability">
+                                <CellTemplate>
+                                    @if (context.Item.IsCheckedOut)
+                                    {
+                                        <MudButton Variant="Variant.Text" Color="Color.Secondary"
+                                                   OnClick="() => OnEdit(context.Item.Id)">Checked In</MudButton>
+
+                                    }
+                                    else
+                                    {
+                                        <MudButton Variant="Variant.Text" Color="Color.Tertiary"
+                                                   OnClick="() => OnEdit(context.Item.Id)">Check Out</MudButton>
+                                    }
+                                </CellTemplate>
+                            </TemplateColumn>
+                            <PropertyColumn Property="x => x.CheckInDate" Format="mm/dd/yyyy" Title="Return Date"/>
                             <TemplateColumn CellClass="d-flex justify-end">
                                 <CellTemplate>
-                                    <MudIconButton Size="@Size.Small" Class="mr-3" Icon="@Icons.Material.Outlined.Visibility" OnClick="() => OnView(context.Item.Id)"/>
-                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="() => OnEdit(context.Item.Id)"/>
-                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete" OnClick="(async () => await OnDeleteAsync(context.Item.Id))"/>
+                                    <MudIconButton Size="@Size.Small" Class="mr-3"
+                                                   Icon="@Icons.Material.Outlined.Visibility"
+                                                   OnClick="() => OnView(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit"
+                                                   OnClick="() => OnEdit(context.Item.Id)"/>
+                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete"
+                                                   OnClick="(async () => await OnDeleteAsync(context.Item.Id))"/>
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
                     </MudDataGrid>
-                </MudItem>
-            </MudGrid>
+
+                </MudGrid>
+            </MudItem>
         </MudItem>
     </MudGrid>
     <MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">

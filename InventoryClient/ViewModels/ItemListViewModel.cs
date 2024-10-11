@@ -12,6 +12,9 @@ public class ItemListViewModel
     public string? SerialNumber { get; set; }
     public string? TagId { get; set; }
     public decimal Price { get; set; }
+    public DateTime? CheckOutDate { get; set; }
+    public DateTime? CheckInDate { get; set; }
+    public bool IsCheckedOut { get; set; }
     public string? Notes { get; set; }
     public int CategoryId { get; set; }
     public string? CategoryName { get; set; }
