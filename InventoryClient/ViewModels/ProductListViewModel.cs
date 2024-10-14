@@ -11,6 +11,7 @@ public class ProductListViewModel
     public string? Name { get; set; }
     public string? Description { get; set; }
     public int Quantity { get; set; }
+    public int AvailableQuantity { get; set; }
     [Required]
     [Range(0.01, 5000.00)]
     public decimal Price { get; set; }

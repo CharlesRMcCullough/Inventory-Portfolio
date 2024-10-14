@@ -31,7 +31,7 @@ Accept: application/json
 
 ### Items
 
-GET {{API_HostAddress}}/api/items/1
+GET {{API_HostAddress}}/api/item/4
 Accept: application/json
 
 

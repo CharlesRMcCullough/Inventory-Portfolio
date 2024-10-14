@@ -14,47 +14,52 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
 {
     public async Task<List<ProductDto>> GetProductsAsync()
     {
-        try
-        {
             return await context.Products
-                .Where(p => p.Status == true)
-                .Include(c => c.Category)
-                .Include(m => m.Model)
-                .Include(ma => ma.Make)
+                .Include(p => p.Item) 
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category != null ? p.Category.Name : string.Empty,
+                    MakeId = p.MakeId,
+                    MakeName = p.Make != null ? p.Make.Name : string.Empty,
+                    ModelId = p.ModelId,
+                    ModelName = p.Model != null ? p.Model.Name : string.Empty,
+                    Status = p.Status,
+                    Quantity = context.Item.Count(i => i.ProductId == p.Id && i.Status),
+                    AvailableQuantity = context.Item.Count(i => i.ProductId == p.Id && i.Status && i.CheckOutDate == null)
+                })
                 .AsNoTracking()
-                .ProjectTo<ProductDto>(mapper.ConfigurationProvider)
-                .ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, $"Error getting products - GetProductsAsync {ex.Message}");
-            throw;
-        }
+                .ToListAsync();  
     }
     public async Task<ProductDto?> GetProductByIdAsync(int id)
     {
-        try
-        {
             return await context.Products
-                .Where(p => p.Id == id && p.Status == true)
-                .Include(c => c.Category)
-                .Include(m => m.Model)
-                .Include(ma => ma.Make)
-                .Select(p => mapper.Map<ProductDto>(p))
-                .FirstOrDefaultAsync();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, $"Error getting product by id - GetProductByIdAsync {ex.Message}");
-            throw;
-
-        }
+                .Include(p => p.Item) 
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category != null ? p.Category.Name : string.Empty,
+                    MakeId = p.MakeId,
+                    MakeName = p.Make != null ? p.Make.Name : string.Empty,
+                    ModelId = p.ModelId,
+                    ModelName = p.Model != null ? p.Model.Name : string.Empty,
+                    Status = p.Status,
+                    Quantity = context.Item.Count(i => i.ProductId == p.Id && i.Status),
+                    AvailableQuantity = context.Item.Count(i => i.ProductId == p.Id && i.Status && i.CheckOutDate == null)
+                })
+                .FirstOrDefaultAsync();  
     }
 
     public async Task<List<DropdownDto>> GetProductsForDropdownAsync()
     {
-        try
-        {
             return await (from product in context.Products
                           where product.Status == true
                           orderby product.Name
@@ -63,39 +68,24 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
                               Id = product.Id,
                               Name = product.Name
                           }).ToListAsync();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, $"Error getting products for dropdown - GetProductsForDropdownAsync {ex.Message}");
-            throw;
-        }
     }
 
     public async Task<ProductDto> CreateProductAsync(ProductDto productDto)
     {
-        try
-        {
             var productToCreate = mapper.Map<Product>(productDto);
             var createdProduct = await context.Products.AddAsync(productToCreate);
             await context.SaveChangesAsync();
             return mapper.Map<ProductDto>(createdProduct.Entity);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error creating product - CreateProductAsync");
-            throw;
-        }
+        
     }
 
     public async Task<ProductDto> UpdateProductAsync(ProductDto productDto)
     {
-        try
-        {
             var response = await context.Products.FindAsync(productDto.Id);
 
             if (response == null)
             {
-                throw new CustomExceptions.NotFoundException($"Model with id {productDto.Id} was not found");
+                throw new CustomExceptions.NotFoundException($"Product with id {productDto.Id} was not found");
             }
 
             response.Id = productDto.Id;
@@ -112,33 +102,20 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
             await context.SaveChangesAsync();
 
             return mapper.Map<ProductDto>(response);
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, $"Error creating product for - CreateProductAsync {ex.Message}");
-            throw;
-        }
+
     }
     public async Task DeleteProductsAsync(int id)
     {
-        try
-        {
             var response = await context.Products.Where(p => p.Id == id)
                 .FirstOrDefaultAsync();
 
             if (response == null)
             {
-                throw new CustomExceptions.NotFoundException($"Model with id {id} was not found");
+                throw new CustomExceptions.NotFoundException($"Product with id {id} was not found");
             }
             
             context.Products.Remove(response);
             await context.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            Log.Error(ex, $"Error deleting product for - DeleteProductsAsync {ex.Message}");
-            throw;
-        }
     }
 }
 

@@ -10,12 +10,12 @@ public class ProductIntegration : IProductIntegration
 {
     private const string ApiBase = "/api/products";
     private const string ApiUrl = "http://localhost:7001";
-    
+
     private static readonly HttpClient HttpClient = new()
     {
         BaseAddress = new Uri(ApiUrl)
     };
-    
+
     public async Task<IEnumerable<ProductListViewModel>> GetProductsAsync()
     {
         var response = await HttpClient.GetAsync(ApiBase);
@@ -31,7 +31,7 @@ public class ProductIntegration : IProductIntegration
 
         return returnProducts;
     }
-    
+
     public async Task<ProductListViewModel> GetProductByIdAsync(int id)
     {
         var response = await HttpClient.GetAsync($"{ApiBase}/{id}");
@@ -45,18 +45,18 @@ public class ProductIntegration : IProductIntegration
 
         return new ProductListViewModel();
     }
-    
-    
+
+
     public async Task<IEnumerable<DropdownViewModel>> GetProductsForDropdownsAsync()
     {
         try
         {
             var response = await HttpClient.GetAsync($"{ApiBase}/dropdowns");
-            response.EnsureSuccessStatusCode(); 
+            response.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadAsStringAsync(); 
+            var result = await response.Content.ReadAsStringAsync();
             var returnProducts = JsonConvert.DeserializeObject<List<DropdownViewModel>>(result) ?? new List<DropdownViewModel>();
-    
+
             return returnProducts;
         }
         catch (HttpRequestException)
@@ -70,7 +70,7 @@ public class ProductIntegration : IProductIntegration
         }
     }
 
-     public async Task<ProductListViewModel> UpdateProductAsync(ProductListViewModel productToUpdate)
+    public async Task<ProductListViewModel> UpdateProductAsync(ProductListViewModel productToUpdate)
     {
         var productDto = new ProductDto()
 
@@ -86,17 +86,17 @@ public class ProductIntegration : IProductIntegration
             Notes = productToUpdate.Notes,
             Status = productToUpdate.Status,
         };
-        
+
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");
-        
+
         var response = await HttpClient.PutAsync(ApiBase, jsonContent);
-        
+
         var data = response.Content.ReadAsStringAsync().Result;
         var updatedProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
-        
+
         return updatedProduct ?? new ProductListViewModel();
     }
-    
+
     public async Task<ProductListViewModel> CreateProductAsync(ProductListViewModel productToAdd)
     {
         var productDto = new ProductDto()
@@ -112,22 +112,14 @@ public class ProductIntegration : IProductIntegration
             Status = true
         };
 
-        try
-        {
+        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8,
+            "application/json");
 
-            using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8,
-                "application/json");
+        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
 
-            var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+        var data = response.Content.ReadAsStringAsync().Result;
+        var returnProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
 
-            var data = response.Content.ReadAsStringAsync().Result;
-            var returnProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
-        } catch (Exception ex)
-        {
-            //Log.Error(ex, $"Error creating product - CreateProductAsync {ex.Message}");
-            var a = ex.Message;
-            throw;
-        }
 
         return new ProductListViewModel();
     }

@@ -1,0 +1,69 @@
+@page "/ItemEdit/{id:int}/{mode:int}"
+@using InventoryClient.Integrations.Interfaces
+@inject IItemIntegration Integration
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+<MudText Typo="Typo.h5" GutterBottom="true">@_productPrompt</MudText>
+<EditForm Model="@ViewModel" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator/>
+    <MudGrid>
+        <MudItem xs="12" sm="7">
+            <MudCard Class="border-top">
+                <MudCardContent>
+                   
+                    @if (!IsAdd)
+                    {
+                        <MudTextField Label="Name" HelperText="Model Name" HelperTextOnFocus="true"
+                                      @bind-Value="ViewModel.Name" Disabled="IsView || IsAdd" For="@(() => ViewModel.Name)"/>
+                        <MudTextField Label="Description" Disabled="IsView || IsAdd" HelperText="Model Description" HelperTextOnFocus="true"
+                                      Class="mt-3 mb-5" @bind-Value="ViewModel.Description" For="@(() => ViewModel.Description)"/>
+                    }
+                    <MudTextField Label="Serial Number" Disabled=@IsView HelperText="Serial Number" HelperTextOnFocus="true"
+                                  Class="mt-3 mb-5" @bind-Value="ViewModel.SerialNumber" For="@(() => ViewModel.Description)"/>
+                    <MudTextField Label="Tag Id" Disabled=@IsView HelperText="Scan or key Tag Id" HelperTextOnFocus="true"
+                                  Class="mt-3 mb-5" @bind-Value="ViewModel.TagId" For="@(() => ViewModel.Description)"/>
+                    <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Price" Label="Price" Variant="Variant.Text"
+                                     HelperText="Item Price" Disabled="@IsView" />
+                    <div class="d-flex justify-content-between">
+                        <MudDatePicker Label="Checkout Date"  Disabled="!IsEdit" @bind-Date="ViewModel.CheckOutDate" Placeholder="Checkout Date" />
+                        <MudDatePicker Label="Expected Return Date"  Disabled="!IsEdit" @bind-Date="ViewModel.CheckInDate" Placeholder="Expected Return Date" />
+                        @if (ViewModel.CheckOutDate != null)
+                        {
+                            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="() => OnCheckIn()">Check In</MudButton>
+                        }
+                    </div>
+                    <MudTextField Label="Notes" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
+                                  Class="mt-3 mb-5" @bind-Value="ViewModel.Notes" For="@(() => ViewModel.Notes)"/>
+                    @if (!IsAdd)
+                    {
+                    <MudSelect @bind-Value="ViewModel.Status"
+                               Label="Status"
+                               Disabled="IsAdd || IsView"
+                               HelperText="Status of Item"
+                               HelperTextOnFocus="true">
+
+                        <MudSelectItem Value="true">Enabled</MudSelectItem>
+                        <MudSelectItem Value="false">Disable</MudSelectItem>
+                    </MudSelect>
+                    }
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default"
+                               Class="ml-auto" OnClick="@OnCancel">
+                        Cancel
+                    </MudButton>
+                    @if (!IsView)
+                    {
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
+                    }
+
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+<MudOverlay Visible="_isLoading" DarkBackground="false" Absolute="true">
+    <MudProgressCircular Color="Color.Info" Indeterminate="true"/>
+</MudOverlay>
+</MudContainer>

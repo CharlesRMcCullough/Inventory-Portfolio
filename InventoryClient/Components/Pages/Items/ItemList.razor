@@ -9,7 +9,7 @@
 <PageTitle>Items</PageTitle>
 
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraLarge">
-    <MudText Typo="Typo.h4" GutterBottom="true">Item</MudText>
+    <MudText Typo="Typo.h4" GutterBottom="true">Inventory Items</MudText>
     <MudGrid Spacing="5" Class="mt-4" >
         <MudItem xs="10">
             <MudItem xs="6">
@@ -37,7 +37,7 @@
                                     @if (context.Item.IsCheckedOut)
                                     {
                                         <MudButton Variant="Variant.Text" Color="Color.Secondary"
-                                                   OnClick="() => OnEdit(context.Item.Id)">Checked In</MudButton>
+                                                   OnClick="() => OnEdit(context.Item.Id)">Check In</MudButton>
 
                                     }
                                     else
@@ -47,7 +47,7 @@
                                     }
                                 </CellTemplate>
                             </TemplateColumn>
-                            <PropertyColumn Property="x => x.CheckInDate" Format="mm/dd/yyyy" Title="Return Date"/>
+                            <PropertyColumn Property="x => x.ExpectedReturnDate"  Title="Expected Return Date"/>
                             <TemplateColumn CellClass="d-flex justify-end">
                                 <CellTemplate>
                                     <MudIconButton Size="@Size.Small" Class="mr-3"

@@ -40,11 +40,9 @@
 
                         <div class="d-flex justify-content-between">
                                     <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Quantity" Label="Quantity" Variant="Variant.Text"
-                                                     HelperText="Product Quantity" HelperTextOnFocus="true" Disabled="IsView || IsAdd"/>
-
-                                    <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Price" Label="Price" Variant="Variant.Text"
-                                                     HelperText="Product Price" HelperTextOnFocus="true" Disabled="@IsView"
-                                                     For="@(() => ViewModel.Price)"/>
+                                                     HelperText="Product Quantity" HelperTextOnFocus="true" ReadOnly="true"/>
+                                    <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.AvailableQuantity" Label="Units Available" Variant="Variant.Text"
+                                                     HelperText="Product Quantity" HelperTextOnFocus="true" ReadOnly="true"/>
                         </div>
                         <MudTextField Label="Notes" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
                                       Class="mt-3 mb-5" @bind-Value="ViewModel.Notes" For="@(() => ViewModel.Notes)"/>
@@ -53,7 +51,7 @@
                             <MudSelect @bind-Value="ViewModel.Status"
                                        Label="Status"
                                        Disabled="IsAdd || IsView"
-                                       HelperText="Status of Category"
+                                       HelperText="Status of Product"
                                        HelperTextOnFocus="true">
 
                                 <MudSelectItem Value="true">Enabled</MudSelectItem>

@@ -19,6 +19,8 @@ public class MappingProfiles : Profile
         CreateMap<Make, MakeDto>();
         CreateMap<ModelDto, Model>();
         CreateMap<Model, ModelDto>();
+        CreateMap<ItemDto, Item>();
+        CreateMap<Item, ItemDto>();
         CreateMap<ProductDto, Product>();
         CreateMap<Product, ProductDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))

@@ -14,6 +14,7 @@ public class ItemListViewModel
     public decimal Price { get; set; }
     public DateTime? CheckOutDate { get; set; }
     public DateTime? CheckInDate { get; set; }
+    public string? ExpectedReturnDate { get; set; }
     public bool IsCheckedOut { get; set; }
     public string? Notes { get; set; }
     public int CategoryId { get; set; }

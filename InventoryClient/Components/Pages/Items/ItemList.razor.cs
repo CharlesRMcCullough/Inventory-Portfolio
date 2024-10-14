@@ -54,7 +54,7 @@ public partial class ItemList : ComponentBase
             try
             {
                 _isLoading = true;
-        //        await Integration.DeleteProductAsync(id);
+                await Integration.DeleteItemAsync(id);
                 Snackbar.Add("Delete successful!", Severity.Success);
             }
             catch (Exception e)
@@ -92,15 +92,15 @@ public partial class ItemList : ComponentBase
 
     private void OnEdit(int id)
     {
-        //Navigation.NavigateTo($"/ProducEdit/{id}/1");
+        Navigation.NavigateTo($"/ItemEdit/{id}/1");
     }
     private void OnView(int id)
     {
-      //  Navigation.NavigateTo($"/ProductEdit/{id}/0");
+        Navigation.NavigateTo($"/ItemEdit/{id}/0");
     }
 
     private void OnAdd()
     {
-        //Navigation.NavigateTo("/ProductEdit/0/2");
+        Navigation.NavigateTo($"/ItemEdit/{_selectedProduct}/2");
     }
 }
