@@ -16,6 +16,7 @@ public class ItemListViewModel
     public DateTime? CheckInDate { get; set; }
     public string? ExpectedReturnDate { get; set; }
     public bool IsCheckedOut { get; set; }
+    public string? CheckOutLocation { get; set; }
     public string? Notes { get; set; }
     public int CategoryId { get; set; }
     public string? CategoryName { get; set; }

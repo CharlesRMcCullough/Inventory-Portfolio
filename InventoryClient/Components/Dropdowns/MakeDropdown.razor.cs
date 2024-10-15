@@ -34,12 +34,13 @@ public partial class MakeDropdown : ComponentBase
             _categoryId = CategoryId;
             await GetMakesAsync();
         }
-        StateHasChanged();
+
     }
 
     private async Task GetMakesAsync()
     {
         Makes = await Integration.GetMakesForDropdownsAsync(CategoryId);
+        StateHasChanged();
     }
 
     private void OnSelectChanged(int makeId)

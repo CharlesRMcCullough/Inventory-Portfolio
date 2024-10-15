@@ -1,5 +1,6 @@
 @page "/Products"
 @using InventoryClient.Integrations.Interfaces
+@using InventoryClient.Components.Dropdowns
 @inject NavigationManager Navigation
 @inject IProductIntegration Integration
 @inject IDialogService DialogService
@@ -7,23 +8,38 @@
 
 <PageTitle>Products</PageTitle>
 
-<MudContainer Class="mt-12" MaxWidth="MaxWidth.ExtraLarge">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
     <MudText Typo="Typo.h4" GutterBottom="true">Products</MudText>
-    <MudGrid Spacing="14" Class="mt-4" MaxWidth="MaxWidth.Large">
+    <MudGrid Spacing="14" Class="mt-4">
         <MudItem xs="10">
+            <MudItem xs="6">
+                <CategoryDropdown
+                    Disabled="false"
+                    Search="true"
+                    SelectedIndex="@_selectedCategory"
+                    OnCategoryChanged="OnCategoryChange"/>
+            </MudItem>
             <MudGrid >
-                <MudItem xs="12" >
-                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="ml-auto mb-5"  OnClick="OnAdd">Add Product</MudButton>
-                    <MudDataGrid  maxWidth="100%" Items="@Products">
+
+                <MudItem xs="12">
+                    
+                    <MudDataGrid @ref="@_grid"  Items="@Products" RowsPerPage="10">
+                        <ToolBarContent>
+                            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="float-right mb-5" 
+                                       OnClick="OnAdd">Add Product</MudButton>
+                            <MudSpacer />
+                            <MudTextField @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.CategoryName" Title="Category" Filterable="true"/>
                             <PropertyColumn Property="x => x.MakeName" Title="Make" Filterable="false"/>
                             <PropertyColumn Property="x => x.ModelName" Title="Model" Filterable="false"/>
-                            <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true" />
+                            <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
                             <PropertyColumn Property="x => x.Description" Title="Description"/>
                             <PropertyColumn Property="x => x.Quantity" Title="Quantity"/>
                             <PropertyColumn Property="x => x.AvailableQuantity" Title="Available"/>
-                            
+
                             <TemplateColumn CellClass="d-flex justify-end">
                                 <CellTemplate>
                                     <MudIconButton Size="@Size.Small" Class="mr-3" Icon="@Icons.Material.Outlined.Visibility" OnClick="() => OnView(context.Item.Id)"/>
@@ -32,6 +48,11 @@
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
+                        <PagerContent>
+                            <div class="d-flex flex-column align-center">
+                                <MudPagination Color="Color.Primary" Count="@((_grid.GetFilteredItemsCount() + _grid.RowsPerPage - 1) / _grid.RowsPerPage)" @bind-Selected="@_selectedPage"/>
+                            </div>
+                        </PagerContent>
                     </MudDataGrid>
                 </MudItem>
             </MudGrid>

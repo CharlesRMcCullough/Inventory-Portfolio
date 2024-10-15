@@ -8,7 +8,10 @@ public partial class ProductList : ComponentBase
 {
     private IEnumerable<ProductListViewModel>? Products { get; set; }
     private bool _isLoading;
-    
+    private int _selectedCategory;
+    private string _searchText = string.Empty;
+    private int _selectedPage;
+    private MudDataGrid<ProductListViewModel> _grid;
     protected override async Task OnInitializedAsync()
     {
         await GetProductsAsync();
@@ -80,5 +83,24 @@ public partial class ProductList : ComponentBase
     private void OnAdd()
     {
         Navigation.NavigateTo("/ProductEdit/0/2");
+    }
+    
+    private async Task OnCategoryChange(int categoryId)
+    {
+        try
+        {
+            _isLoading = true;
+            Products = await Integration.GetProductsByCategoryIdAsync(categoryId);
+            _selectedCategory = categoryId;
+            StateHasChanged();
+        }
+        catch (Exception e)
+        {
+            Snackbar.Add($"Unable to load products! {e.Message}", Severity.Error);
+        }
+        finally
+        {
+            _isLoading = false;
+        }
     }
 }

@@ -21,6 +21,20 @@ public class ProductController(IProductLogic logic) : ControllerBase
                 "Error retrieving data from the database");
         }
     }
+    
+    [HttpGet("byCategory/{id:int}")]
+    public async Task<ActionResult<List<ProductDto>>> GetProductsByCategoryAsync(int id)
+    {
+        try
+        {
+            return Ok(await logic.GetProductsByCategoryAsync(id));
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                "Error retrieving data from the database");
+        }
+    }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProductDto?>> GetProductById(int id)
@@ -42,12 +56,6 @@ public class ProductController(IProductLogic logic) : ControllerBase
                 $"Error retrieving product {id} from the database! {ex.Message}");
         }
     }
-
-// Clean up:
-// - Standardized variable names
-// - Removed debugging statements
-// - Improved readability by adding whitespace and breaking up long lines
-// - Added exception message to error response to help with debugging
 
     [HttpGet("dropdowns")]
     public async Task<ActionResult<List<DropdownDto>?>> GetProductDropdownListAsync()

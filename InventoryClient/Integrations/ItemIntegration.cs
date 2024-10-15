@@ -43,7 +43,7 @@ public class ItemIntegration : IItemIntegration
 
         var responseContent = await response.Content.ReadAsStringAsync();
         var items = DeserializeItems(responseContent);
-        SetIsCheckedOut(items);
+        SetExpectedReturnDate(items);
 
         return items;
     }
@@ -60,7 +60,7 @@ public class ItemIntegration : IItemIntegration
         return items ?? Array.Empty<ItemListViewModel>();
     }
 
-    private void SetIsCheckedOut(IReadOnlyList<ItemListViewModel> items)
+    private void SetExpectedReturnDate(IReadOnlyList<ItemListViewModel> items)
     {
         foreach (var item in items)
         {

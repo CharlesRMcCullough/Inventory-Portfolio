@@ -3,10 +3,9 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
 using API.Logic.Interfaces;
-using Serilog;
+
 using API.Entities;
 using API.Exceptions;
-using AutoMapper.QueryableExtensions;
 
 namespace API.Logic;
 
@@ -33,6 +32,55 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
                 })
                 .AsNoTracking()
                 .ToListAsync();  
+    }
+    
+    public async Task<List<ProductDto>> GetProductsByCategoryAsync(int id)
+    {
+        if (id == 0)
+        {
+            return await context.Products
+                .Include(p => p.Item)
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category != null ? p.Category.Name : string.Empty,
+                    MakeId = p.MakeId,
+                    MakeName = p.Make != null ? p.Make.Name : string.Empty,
+                    ModelId = p.ModelId,
+                    ModelName = p.Model != null ? p.Model.Name : string.Empty,
+                    Status = p.Status,
+                    Quantity = context.Item.Count(i => i.ProductId == p.Id && i.Status),
+                    AvailableQuantity = context.Item.Count(i => i.ProductId == p.Id && i.Status && i.CheckOutDate == null)
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        else
+        {
+            return await context.Products
+                .Include(p => p.Item)
+                .Where(p => p.CategoryId == id)
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Description = p.Description,
+                    CategoryId = p.CategoryId,
+                    CategoryName = p.Category != null ? p.Category.Name : string.Empty,
+                    MakeId = p.MakeId,
+                    MakeName = p.Make != null ? p.Make.Name : string.Empty,
+                    ModelId = p.ModelId,
+                    ModelName = p.Model != null ? p.Model.Name : string.Empty,
+                    Status = p.Status,
+                    Quantity = context.Item.Count(i => i.ProductId == p.Id && i.Status),
+                    AvailableQuantity = context.Item.Count(i => i.ProductId == p.Id && i.Status && i.CheckOutDate == null)
+                })
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
     public async Task<ProductDto?> GetProductByIdAsync(int id)
     {

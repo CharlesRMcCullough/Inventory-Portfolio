@@ -4,7 +4,7 @@
 @inject ICategoryIntegration Integration
 @inject ISnackbar Snackbar
 
-<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+<MudContainer MaxWidth="MaxWidth.Large">
     <MudText Typo="Typo.h5" GutterBottom="true">@_makePrompt</MudText>
     <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
         <DataAnnotationsValidator/>

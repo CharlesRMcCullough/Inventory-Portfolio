@@ -4,9 +4,7 @@ using API.Entities;
 using API.Exceptions;
 using API.Logic.Interfaces;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace API.Logic;
 
@@ -94,7 +92,7 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
     public async Task<ItemDto?> GetItemByIdAsync(int id)
     {
         
-        var x = await context.Item
+        return await context.Item
             .Where(i => i.Id == id && i.Status)
             .Join(context.Products, i => i.ProductId, p => p.Id, (i, p) => new ItemDto
             {
@@ -117,8 +115,6 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
                 ModelName = (p.Model != null) ? p.Model.Name : string.Empty
             })
             .FirstOrDefaultAsync();
-
-        return x;
     }
     
     public async Task<ItemDto> CreateItemAsync(ItemDto itemDto)
@@ -155,7 +151,7 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
         }
         catch (Exception ex)
         {
-            var a = ex.Message;
+            throw new CustomExceptions.BadRequestException($"Error updating item {itemDto.Id} in the database! {ex.Message}");
         }
 
         return mapper.Map<ItemDto>(response);

@@ -17,7 +17,8 @@ public partial class ItemEdit : ComponentBase
 
     private ItemListViewModel ViewModel { get; set; } = new ItemListViewModel();
     private string _productPrompt = string.Empty;
-    private bool _isLoading = false;
+    private bool _isLoading;
+
     
     protected override async Task OnParametersSetAsync()
     {
@@ -35,10 +36,8 @@ public partial class ItemEdit : ComponentBase
             ViewModel.CheckInDate = item.CheckInDate;
             ViewModel.Status = item.Status;
             ViewModel.ProductId = item.ProductId;
-
-
+            ViewModel.IsCheckedOut = item.CheckOutDate != null;
         }
-
         
         _productPrompt = IsAdd ? "Item Add" : $"Item: {ViewModel.Name}";
     }
@@ -102,7 +101,21 @@ public partial class ItemEdit : ComponentBase
     {
         ViewModel.CheckOutDate = null;
         ViewModel.CheckInDate = null;
+        ViewModel.Notes = $"{ViewModel.Notes} Checked in on {DateTime.Now:yyyy-MM-dd}\n";
         await UpdateProduct();
         Navigation.NavigateTo("/Items");
+    }
+    private async Task OnCheckOut()
+    {
+        if (ViewModel.CheckOutDate != null && ViewModel.CheckInDate != null)
+        {
+            ViewModel.Notes = $"{ViewModel.Notes} Checkout on {DateTime.Now:yyyy-MM-dd HH}\n";
+            await UpdateProduct();
+            Navigation.NavigateTo("/Items");
+        }
+        else
+        {
+            Snackbar.Add($"The Checkout date and Expected Cheek In date are required", Severity.Error);
+        }
     }
 }

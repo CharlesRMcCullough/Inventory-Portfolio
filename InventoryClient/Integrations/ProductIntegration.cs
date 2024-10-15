@@ -45,6 +45,22 @@ public class ProductIntegration : IProductIntegration
 
         return new ProductListViewModel();
     }
+    
+    public async Task<IEnumerable<ProductListViewModel>> GetProductsByCategoryIdAsync(int id)
+    {
+        var response = await HttpClient.GetAsync($"{ApiBase}/byCategory/{id}");
+        var returnProducts = new List<ProductListViewModel>();
+        if (response.IsSuccessStatusCode)
+        {
+            var data = response.Content.ReadAsStringAsync().Result;
+            returnProducts = JsonConvert.DeserializeObject<List<ProductListViewModel>>(data);
+        }
+
+        if (returnProducts == null)
+            return new List<ProductListViewModel>();
+
+        return returnProducts;
+    }
 
 
     public async Task<IEnumerable<DropdownViewModel>> GetProductsForDropdownsAsync()

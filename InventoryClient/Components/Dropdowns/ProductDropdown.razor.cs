@@ -28,6 +28,7 @@ public partial class ProductDropdown : ComponentBase
     private async Task GetProducts()
     {
         Products = await Integration.GetProductsForDropdownsAsync();
+        StateHasChanged();
     }
 
     private void OnSelectChanged(int productId)

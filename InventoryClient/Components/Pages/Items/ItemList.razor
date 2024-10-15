@@ -8,7 +8,7 @@
 
 <PageTitle>Items</PageTitle>
 
-<MudContainer Class="mt-5" MaxWidth="MaxWidth.ExtraLarge">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge">
     <MudText Typo="Typo.h4" GutterBottom="true">Inventory Items</MudText>
     <MudGrid Spacing="5" Class="mt-4" >
         <MudItem xs="10">
@@ -21,7 +21,7 @@
                     <MudDataGrid Items="@Items">
                         <ToolBarContent>
                             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary"
-                                                             Class="mb-5 ml-auto" OnClick="OnAdd">Add Item</MudButton>
+                                       Class="mb-5 ml-auto" OnClick="OnAdd">Add Item</MudButton>
                             <MudSpacer />
                             <MudTextField @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -60,8 +60,12 @@
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
+                        <PagerContent>
+                            <div class="d-flex flex-column align-center">
+                            <MudPagination Color="Color.Primary" Count="4" @bind-Selected="@_selected"/>
+                            </div>
+                        </PagerContent>
                     </MudDataGrid>
-
                 </MudGrid>
             </MudItem>
         </MudItem>
