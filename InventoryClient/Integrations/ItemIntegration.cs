@@ -2,24 +2,24 @@ using System.Text;
 using API.DTOs;
 using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace InventoryClient.Integrations;
 
 public class ItemIntegration : IItemIntegration
 {
-    private const string ApiBase = "/api/items";
-    private const string ApiUrl = "http://localhost:7001";
+    private readonly HttpClient _httpClient;
 
-    private static readonly HttpClient HttpClient = new()
+    public ItemIntegration(IOptions<ApiSettings> apiSettings)
     {
-        BaseAddress = new Uri(ApiUrl)
-    };
+        var settings = apiSettings.Value;
+        _httpClient = new HttpClient { BaseAddress = new Uri(settings.ApiUrl + settings.ItemApiBase) };
+    }
 
     public async Task<IReadOnlyList<ItemListViewModel>> GetItemsAsync()
     {
-        var response = await HttpClient.GetAsync(ApiBase);
+        var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
 
         if (response.IsSuccessStatusCode)
         {
@@ -33,8 +33,8 @@ public class ItemIntegration : IItemIntegration
 
     public async Task<IReadOnlyList<ItemListViewModel>> GetItemsByProductId(int productId)
     {
-        var requestUri = $"{ApiBase}/{productId}";
-        var response = await HttpClient.GetAsync(requestUri);
+        
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{productId}");
 
         if (!response.IsSuccessStatusCode)
         {
@@ -74,7 +74,8 @@ public class ItemIntegration : IItemIntegration
 
     public async Task<ItemListViewModel> GetItemById(int itemId)
     {
-        var response = await HttpClient.GetAsync($"{ApiBase}/item/{itemId}");
+      //  var response = await HttpClient.GetAsync($"{ApiBase}/item/{itemId}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/item/{itemId}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -87,32 +88,31 @@ public class ItemIntegration : IItemIntegration
 
     public async Task<ItemListViewModel> CreateItemAsync(ItemListViewModel itemToAdd)
     {
-        var itemDto = new ItemDto()
+        var itemDto = new ItemDto
         {
-            Id = itemToAdd.Id,
             SerialNumber = itemToAdd.SerialNumber,
             TagId = itemToAdd.TagId,
             ProductId = itemToAdd.ProductId,
             Price = itemToAdd.Price,
             Notes = itemToAdd.Notes,
+            History = string.Empty,
+            Location = string.Empty,
             Status = itemToAdd.Status,
         };
 
-        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(itemDto), Encoding.UTF8,
-            "application/json");
+        var jsonContent = new StringContent(JsonConvert.SerializeObject(itemDto), Encoding.UTF8, "application/json");
 
-        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+        var response = await _httpClient.PostAsync(_httpClient.BaseAddress, jsonContent);
 
-        var data = response.Content.ReadAsStringAsync().Result;
-        var returnProduct = JsonConvert.DeserializeObject<ItemListViewModel>(data);
+        var data = await response.Content.ReadAsStringAsync();
+        var returnItem = JsonConvert.DeserializeObject<ItemListViewModel>(data);
 
-
-        return new ItemListViewModel();
+        return returnItem ?? new ItemListViewModel();
     }
 
     public async Task<ItemListViewModel> UpdateItemAsync(ItemListViewModel itemToUpdate)
     {
-        var itemDto = new ItemDto()
+        var itemDto = new ItemDto
         {
             Id = itemToUpdate.Id,
             ProductId = itemToUpdate.ProductId,
@@ -122,15 +122,16 @@ public class ItemIntegration : IItemIntegration
             CheckOutDate = itemToUpdate.CheckOutDate,
             Price = itemToUpdate.Price,
             Notes = itemToUpdate.Notes,
+            History = itemToUpdate.History,
+            Location = itemToUpdate.Location,
             Status = itemToUpdate.Status,
         };
 
-        using StringContent jsonContent =
-            new StringContent(JsonConvert.SerializeObject(itemDto), Encoding.UTF8, "application/json");
+        var jsonContent = new StringContent(JsonConvert.SerializeObject(itemDto), Encoding.UTF8, "application/json");
 
-        var response = await HttpClient.PutAsync(ApiBase, jsonContent);
+        var response = await _httpClient.PutAsync(_httpClient.BaseAddress, jsonContent);
 
-        var data = response.Content.ReadAsStringAsync().Result;
+        var data = await response.Content.ReadAsStringAsync();
         var updatedItem = JsonConvert.DeserializeObject<ItemListViewModel>(data);
 
         return updatedItem ?? new ItemListViewModel();
@@ -138,6 +139,6 @@ public class ItemIntegration : IItemIntegration
 
     public async Task DeleteItemAsync(int id)
     {
-        await HttpClient.DeleteAsync($"{ApiBase}/{id}");
+        await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/{id}");
     }
 }

@@ -14,7 +14,8 @@
                 <MudCard>
                     <MudCardContent>
                         <MakeDropdown
-                            Disabled="IsAdd || IsView"
+                            Disabled="IsView"
+                            Search="true"
                             Required="true"
                             SelectedIndex="@ViewModel.MakeId"
                             OnMakeChanged="OnMakeChange" />

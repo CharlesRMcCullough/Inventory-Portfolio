@@ -14,6 +14,8 @@ public class Item
     public decimal Price { get; set; }
     public string? Notes { get; set; }
     public bool Status { get; set; }
+    public string? History { get; set; }
+    public string? Location { get; set; }
     
     public int ProductId { get; set; }
     public Product Product { get; set; } = null!;

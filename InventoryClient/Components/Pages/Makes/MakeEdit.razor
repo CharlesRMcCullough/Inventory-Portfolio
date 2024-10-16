@@ -1,5 +1,4 @@
 @page "/MakeEdit/{id:int}/{mode:int}"
-@using InventoryClient.Integrations
 @using InventoryClient.Integrations.Interfaces
 @using InventoryClient.Components.Dropdowns
 @inject NavigationManager Navigation
@@ -15,7 +14,7 @@
                 <MudCard>
                     <MudCardContent>
                         <CategoryDropdown 
-                            Disabled="IsAdd || IsView"
+                            Disabled="IsView"
                             Required="true"
                             SelectedIndex="@ViewModel.CategoryId" 
                             OnCategoryChanged="OnCategoryChange"/>
@@ -35,7 +34,7 @@
                                 <MudSelectItem Value="false">Disable</MudSelectItem>
                             </MudSelect>
                         }
-                    </MudCardContent>InventoryClient/Components/Pages/Makes/MakeEdit.razor
+                    </MudCardContent>
                     <MudCardActions>
                         <MudButton ButtonType="ButtonType.Button" Variant="Variant.Filled" Color="Color.Default" 
                                    Class="ml-auto" OnClick="@OnCancel">Cancel</MudButton>

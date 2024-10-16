@@ -18,6 +18,9 @@ builder.Services.AddScoped<IModelIntegration, ModelIntegration>();
 builder.Services.AddScoped<IProductIntegration, ProductIntegration>();
 builder.Services.AddScoped<IItemIntegration, ItemIntegration>();
 
+builder.Services.Configure<ApiSettings>(
+    builder.Configuration.GetSection("ApiSettings"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

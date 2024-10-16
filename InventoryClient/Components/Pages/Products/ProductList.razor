@@ -12,15 +12,14 @@
     <MudText Typo="Typo.h4" GutterBottom="true">Products</MudText>
     <MudGrid Spacing="14" Class="mt-4">
         <MudItem xs="10">
-            <MudItem xs="6">
-                <CategoryDropdown
-                    Disabled="false"
-                    Search="true"
-                    SelectedIndex="@_selectedCategory"
-                    OnCategoryChanged="OnCategoryChange"/>
-            </MudItem>
-            <MudGrid >
-
+            <MudGrid>
+                <MudItem xs="6">
+                    <CategoryDropdown
+                        Disabled="false"
+                        Search="true"
+                        SelectedIndex="@_selectedCategory"
+                        OnCategoryChanged="OnCategoryChange"/>
+                </MudItem>
                 <MudItem xs="12">
                     
                     <MudDataGrid @ref="@_grid"  Items="@Products" RowsPerPage="10">
@@ -28,7 +27,7 @@
                             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="float-right mb-5" 
                                        OnClick="OnAdd">Add Product</MudButton>
                             <MudSpacer />
-                            <MudTextField @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                            <MudTextField T="string" @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </ToolBarContent>
                         <Columns>

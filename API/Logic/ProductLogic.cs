@@ -124,7 +124,6 @@ public class ProductLogic(InventoryDbContext context, IMapper mapper) : IProduct
             var createdProduct = await context.Products.AddAsync(productToCreate);
             await context.SaveChangesAsync();
             return mapper.Map<ProductDto>(createdProduct.Entity);
-        
     }
 
     public async Task<ProductDto> UpdateProductAsync(ProductDto productDto)

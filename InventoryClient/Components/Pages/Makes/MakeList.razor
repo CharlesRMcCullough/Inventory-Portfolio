@@ -3,7 +3,6 @@
 @inject IMakeIntegration Integration
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
-@using InventoryClient.Integrations
 @using InventoryClient.Integrations.Interfaces
 @using InventoryClient.Components.Dropdowns
 
@@ -21,8 +20,14 @@
         <MudItem xs="10">
             <MudGrid>
                 <MudItem xs="10">
-                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Make</MudButton>
-                    <MudDataGrid Items="@Makes">
+                    
+                    <MudDataGrid @ref="@_grid" Items="@Makes">
+                        <ToolBarContent>
+                            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Make</MudButton>
+                            <MudSpacer />
+                            <MudTextField T="string" @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.CategoryName" Title="Category" Filterable="true"/>
                             <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
@@ -35,6 +40,11 @@
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
+                        <PagerContent>
+                            <div class="d-flex flex-column align-center">
+                                <MudPagination Color="Color.Primary" Count="@((_grid.GetFilteredItemsCount() + _grid.RowsPerPage - 1) / _grid.RowsPerPage)" @bind-Selected="@_selectedPage"/>
+                            </div>
+                        </PagerContent>
                     </MudDataGrid>
                 </MudItem>
             </MudGrid>

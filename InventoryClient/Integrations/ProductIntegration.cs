@@ -2,39 +2,38 @@ using System.Text;
 using API.DTOs;
 using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace InventoryClient.Integrations;
 
 public class ProductIntegration : IProductIntegration
 {
-    private const string ApiBase = "/api/products";
-    private const string ApiUrl = "http://localhost:7001";
 
-    private static readonly HttpClient HttpClient = new()
+    private readonly HttpClient _httpClient;
+
+    public ProductIntegration(IOptions<ApiSettings> apiSettings)
     {
-        BaseAddress = new Uri(ApiUrl)
-    };
-
+        var settings = apiSettings.Value;
+        _httpClient = new HttpClient { BaseAddress = new Uri(settings.ApiUrl + settings.ProductApiBase) };
+    }
     public async Task<IEnumerable<ProductListViewModel>> GetProductsAsync()
     {
-        var response = await HttpClient.GetAsync(ApiBase);
-        var returnProducts = new List<ProductListViewModel>();
+        var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
+
         if (response.IsSuccessStatusCode)
         {
-            var data = response.Content.ReadAsStringAsync().Result;
-            returnProducts = JsonConvert.DeserializeObject<List<ProductListViewModel>>(data);
+            var data = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<List<ProductListViewModel>>(data) ?? new List<ProductListViewModel>();
         }
 
-        if (returnProducts == null)
-            return new List<ProductListViewModel>();
-
-        return returnProducts;
+        return new List<ProductListViewModel>();
     }
 
     public async Task<ProductListViewModel> GetProductByIdAsync(int id)
     {
-        var response = await HttpClient.GetAsync($"{ApiBase}/{id}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{id}");
 
         if (response.IsSuccessStatusCode)
         {
@@ -48,7 +47,7 @@ public class ProductIntegration : IProductIntegration
     
     public async Task<IEnumerable<ProductListViewModel>> GetProductsByCategoryIdAsync(int id)
     {
-        var response = await HttpClient.GetAsync($"{ApiBase}/byCategory/{id}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/byCategory/{id}");
         var returnProducts = new List<ProductListViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -67,22 +66,23 @@ public class ProductIntegration : IProductIntegration
     {
         try
         {
-            var response = await HttpClient.GetAsync($"{ApiBase}/dropdowns");
-            response.EnsureSuccessStatusCode();
+            var httpResponse = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/dropdowns");
+            httpResponse.EnsureSuccessStatusCode();
 
-            var result = await response.Content.ReadAsStringAsync();
-            var returnProducts = JsonConvert.DeserializeObject<List<DropdownViewModel>>(result) ?? new List<DropdownViewModel>();
+            var responseContent = await httpResponse.Content.ReadAsStringAsync();
+            var products = JsonConvert.DeserializeObject<List<DropdownViewModel>>(responseContent) ?? new List<DropdownViewModel>();
 
-            return returnProducts;
+            return products;
         }
-        catch (HttpRequestException)
+        catch (HttpRequestException ex)
         {
-            return new List<DropdownViewModel>(); // Return an empty list on error
+            Log.Error(ex, $"Error retrieving products from the database: {ex.Message}");
+            return new List<DropdownViewModel>();
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
-            // Log the exception (logging mechanism not shown here)
-            return new List<DropdownViewModel>(); // Return an empty list on deserialization error
+            Log.Error(ex, $"Error deserializing products from the database: {ex.Message}");
+            return new List<DropdownViewModel>();
         }
     }
 
@@ -105,7 +105,7 @@ public class ProductIntegration : IProductIntegration
 
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");
 
-        var response = await HttpClient.PutAsync(ApiBase, jsonContent);
+        var response = await _httpClient.PutAsync(_httpClient.BaseAddress, jsonContent);
 
         var data = response.Content.ReadAsStringAsync().Result;
         var updatedProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
@@ -115,7 +115,7 @@ public class ProductIntegration : IProductIntegration
 
     public async Task<ProductListViewModel> CreateProductAsync(ProductListViewModel productToAdd)
     {
-        var productDto = new ProductDto()
+        var productDto = new ProductDto
         {
             Name = productToAdd.Name,
             Description = productToAdd.Description,
@@ -125,23 +125,22 @@ public class ProductIntegration : IProductIntegration
             Quantity = 0,
             ModelId = productToAdd.ModelId,
             Notes = productToAdd.Notes,
-            Status = true
+            Status = true,
         };
 
-        using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8,
-            "application/json");
+        using var jsonContent = new StringContent(JsonConvert.SerializeObject(productDto), Encoding.UTF8, "application/json");
+        var response = await _httpClient.PostAsync(_httpClient.BaseAddress, jsonContent);
 
-        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+        response.EnsureSuccessStatusCode();
 
-        var data = response.Content.ReadAsStringAsync().Result;
+        var data = await response.Content.ReadAsStringAsync();
         var returnProduct = JsonConvert.DeserializeObject<ProductListViewModel>(data);
 
-
-        return new ProductListViewModel();
+        return returnProduct ?? new ProductListViewModel();
     }
 
     public async Task DeleteProductAsync(int id)
     {
-        await HttpClient.DeleteAsync($"{ApiBase}/{id}");
+        await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/{id}");
     }
 }

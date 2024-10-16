@@ -21,8 +21,14 @@
             </MudItem>
             <MudGrid>
                 <MudItem xs="12">
-                    <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Model</MudButton>
-                    <MudDataGrid Items="@Models">
+                    
+                    <MudDataGrid @ref="@_grid" Items="@Models">
+                        <ToolBarContent>
+                            <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary" Class="mb-5 ml-auto" OnClick="OnAdd">Add Model</MudButton>
+                            <MudSpacer />
+                            <MudTextField T="string" @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                                          AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                        </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.MakeName" Title="Make" Filterable="true"/>
                             <PropertyColumn Property="x => x.Name" Title="Name" Filterable="true"/>
@@ -35,6 +41,11 @@
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
+                        <PagerContent>
+                            <div class="d-flex flex-column align-center">
+                                <MudPagination Color="Color.Primary" Count="@((_grid.GetFilteredItemsCount() + _grid.RowsPerPage - 1) / _grid.RowsPerPage)" @bind-Selected="@_selectedPage"/>
+                            </div>
+                        </PagerContent>
                     </MudDataGrid>
                 </MudItem>
             </MudGrid>

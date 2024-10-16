@@ -37,6 +37,8 @@ public partial class ItemEdit : ComponentBase
             ViewModel.Status = item.Status;
             ViewModel.ProductId = item.ProductId;
             ViewModel.IsCheckedOut = item.CheckOutDate != null;
+            ViewModel.Location = item.Location;
+            ViewModel.History  = item.History;
         }
         
         _productPrompt = IsAdd ? "Item Add" : $"Item: {ViewModel.Name}";
@@ -101,7 +103,7 @@ public partial class ItemEdit : ComponentBase
     {
         ViewModel.CheckOutDate = null;
         ViewModel.CheckInDate = null;
-        ViewModel.Notes = $"{ViewModel.Notes} Checked in on {DateTime.Now:yyyy-MM-dd}\n";
+        ViewModel.History = $"{ViewModel.History} Checked in on {DateTime.Now:yyyy-MM-dd}\n";
         await UpdateProduct();
         Navigation.NavigateTo("/Items");
     }
@@ -109,7 +111,7 @@ public partial class ItemEdit : ComponentBase
     {
         if (ViewModel.CheckOutDate != null && ViewModel.CheckInDate != null)
         {
-            ViewModel.Notes = $"{ViewModel.Notes} Checkout on {DateTime.Now:yyyy-MM-dd HH}\n";
+            ViewModel.History = $"{ViewModel.History} Checkout on {DateTime.Now:yyyy-MM-dd HH}\n";
             await UpdateProduct();
             Navigation.NavigateTo("/Items");
         }

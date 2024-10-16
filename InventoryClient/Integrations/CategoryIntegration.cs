@@ -2,6 +2,7 @@ using System.Text;
 using API.DTOs;
 using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace InventoryClient.Integrations;
@@ -9,18 +10,17 @@ namespace InventoryClient.Integrations;
 public class CategoryIntegration : ICategoryIntegration
 {
     
-    private const string ApiBase = "/api/categories";
-    private const string ApiUrl = "http://localhost:7001";
-    
-    
-    private static readonly HttpClient HttpClient = new()
+    private readonly HttpClient _httpClient;
+
+    public CategoryIntegration(IOptions<ApiSettings> apiSettings)
     {
-        BaseAddress = new Uri(ApiUrl)
-    };
+        var settings = apiSettings.Value;
+        _httpClient = new HttpClient { BaseAddress = new Uri(settings.ApiUrl + settings.CategoryApiBase) };
+    }
    
     public async Task<IEnumerable<CategoryListViewModel>> GetCategoriesAsync()
     {
-        var response = await HttpClient.GetAsync(ApiBase);
+        var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
         var returnCategories = new List<CategoryListViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -36,7 +36,7 @@ public class CategoryIntegration : ICategoryIntegration
     
     public async Task<IEnumerable<DropdownViewModel>> GetCategoriesForDropdownsAsync()
     {
-        var response = await HttpClient.GetAsync(ApiBase + "/dropdowns");
+        var response = await _httpClient.GetAsync(_httpClient.BaseAddress+ "/dropdowns");
         var returnCategories = new List<DropdownViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -52,7 +52,7 @@ public class CategoryIntegration : ICategoryIntegration
 
     public async Task<CategoryListViewModel> GetCategoryByIdAsync(int id)
     {
-        var response = await HttpClient.GetAsync(ApiBase + $"/{id}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{id}");
         var returnCategory = new CategoryListViewModel();
         if (response.IsSuccessStatusCode)
         {
@@ -78,7 +78,7 @@ public class CategoryIntegration : ICategoryIntegration
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(categoryDto), Encoding.UTF8, "application/json");
         
-        var response = await HttpClient.PutAsync(ApiBase, jsonContent);
+        var response = await _httpClient.PutAsync(_httpClient.BaseAddress, jsonContent);
         
         var data = response.Content.ReadAsStringAsync().Result;
         var returnCategory = JsonConvert.DeserializeObject<CategoryListViewModel>(data);
@@ -98,7 +98,7 @@ public class CategoryIntegration : ICategoryIntegration
         
         using StringContent jsonContent = new StringContent(JsonConvert.SerializeObject(categoryDto), Encoding.UTF8, "application/json");
         
-        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+        var response = await _httpClient.PostAsync(_httpClient.BaseAddress, jsonContent);
         
         var data = response.Content.ReadAsStringAsync().Result;
         var returnCategory = JsonConvert.DeserializeObject<CategoryListViewModel>(data);
@@ -108,6 +108,6 @@ public class CategoryIntegration : ICategoryIntegration
 
     public async Task DeleteCategoryAsync(int id)
     {
-        await HttpClient.DeleteAsync(ApiBase + $"/{id}");
+        await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/{id}");
     }
 }

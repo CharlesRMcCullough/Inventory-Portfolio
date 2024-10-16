@@ -9,6 +9,9 @@ public partial class ModelList : ComponentBase
     private IEnumerable<ModelListViewModel>? Models  { get; set; }
     private bool _isLoading;
     private int _selectedMake;
+    private string _searchText = string.Empty;
+    private int _selectedPage;
+    private MudDataGrid<ModelListViewModel> _grid;
     
     protected override async Task OnInitializedAsync()
     {

@@ -10,7 +10,8 @@ public partial class ItemList : ComponentBase
     private bool _isLoading;
     private int _selectedProduct = 0;
     private string _searchText = string.Empty;
-    private int _selected = 1;
+    private int _selectedPage;
+    private MudDataGrid<ItemListViewModel> _grid;
     
     protected override async Task OnInitializedAsync()
     {

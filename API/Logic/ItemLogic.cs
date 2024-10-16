@@ -24,6 +24,9 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
                     Description = p.Description ?? string.Empty,
                     Status = i.Status,
                     Price = i.Price,
+                    Notes = i.Notes ?? string.Empty,
+                    History = i.History ?? string.Empty,
+                    Location = i.Location ?? string.Empty,
                     CategoryId = p.CategoryId,
                     CategoryName = (p.Category != null) ? p.Category.Name : string.Empty,
                     MakeId = p.MakeId,
@@ -51,6 +54,9 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
                     Description = p.Description ?? string.Empty,
                     Status = i.Status,
                     Price = i.Price,
+                    Notes = i.Notes ?? string.Empty,
+                    History = i.History ?? string.Empty,
+                    Location = i.Location ?? string.Empty,
                     CheckInDate = i.CheckInDate,
                     CheckOutDate = i.CheckOutDate,
                     CategoryId = p.CategoryId,
@@ -76,6 +82,9 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
                 Description = p.Description ?? string.Empty,
                 Status = i.Status,
                 Price = i.Price,
+                Notes = i.Notes ?? string.Empty,
+                History = i.History ?? string.Empty,
+                Location = i.Location ?? string.Empty,
                 CheckInDate = i.CheckInDate,
                 CheckOutDate = i.CheckOutDate,
                 CategoryId = p.CategoryId,
@@ -108,6 +117,8 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
                 CheckOutDate = i.CheckOutDate,
                 CategoryId = p.CategoryId,
                 Notes = i.Notes ?? string.Empty,
+                History = i.History ?? string.Empty,
+                Location = i.Location ?? string.Empty,
                 CategoryName = (p.Category != null) ? p.Category.Name : string.Empty,
                 MakeId = p.MakeId,
                 MakeName = (p.Make != null) ? p.Make.Name : string.Empty,
@@ -144,6 +155,8 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
         response.Status = itemDto.Status;
         response.Price = itemDto.Price;
         response.Notes = itemDto.Notes;
+        response.History = itemDto.History;
+        response.Location = itemDto.Location;
 
         try
         {

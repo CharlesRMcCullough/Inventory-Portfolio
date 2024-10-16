@@ -69,6 +69,7 @@ public partial class CategoryEdit : ComponentBase
         {
             _isLoading = true;
             _model.Id = 0;
+            _model.Status = true;
             await Integration.CreateCategoryAsync(_model);
         }
         catch (Exception e)

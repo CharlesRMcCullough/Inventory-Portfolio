@@ -70,6 +70,7 @@ public partial class MakeEdit : ComponentBase
         {
             _isLoading = true;
             ViewModel.Id = 0;
+            ViewModel.Status = true;
             await Integration.CreateMakeAsync(ViewModel);
         }
         catch (Exception e)

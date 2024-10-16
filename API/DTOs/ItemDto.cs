@@ -11,6 +11,8 @@ public class ItemDto
     public int Quantity { get; set; }
     public decimal Price { get; set; }
     public string? Notes { get; set; }
+    public string? History { get; set; }
+    public string? Location { get; set; }
     public DateTime? CheckInDate { get; set; }
     public DateTime? CheckOutDate { get; set; }
     public int CategoryId { get; set; }

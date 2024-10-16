@@ -70,6 +70,7 @@ public partial class ModelEdit : ComponentBase
         {
             _isLoading = true;
             ViewModel.Id = 0;
+            ViewModel.Status = true;
             await Integration.CreateModelAsync(ViewModel);
         }
         catch (Exception e)

@@ -8,7 +8,11 @@ public partial class MakeList : ComponentBase
 {
     private IEnumerable<MakeListViewModel>? Makes  { get; set; }
     private bool _isLoading;
-    private int selectedCategory = 0;
+    private int selectedCategory;
+    private string _searchText = string.Empty;
+    private int _selectedPage;
+    private MudDataGrid<MakeListViewModel> _grid;
+    
     
     protected override async Task OnInitializedAsync()
     {

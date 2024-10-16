@@ -2,23 +2,24 @@ using System.Text;
 using API.DTOs;
 using InventoryClient.Integrations.Interfaces;
 using InventoryClient.ViewModels;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace InventoryClient.Integrations;
 
 public class MakeIntegration : IMakeIntegration
 {
-    private const string ApiBase = "/api/makes";
-    private const string ApiUrl = "http://localhost:7001";
+    private readonly HttpClient _httpClient;
 
-    private static readonly HttpClient HttpClient = new()
+    public MakeIntegration(IOptions<ApiSettings> apiSettings)
     {
-        BaseAddress = new Uri(ApiUrl)
-    };
+        var settings = apiSettings.Value;
+        _httpClient = new HttpClient { BaseAddress = new Uri(settings.ApiUrl + settings.MakeApiBase) };
+    }
 
     public async Task<IEnumerable<MakeListViewModel>> GetMakesAsync()
     {
-        var response = await HttpClient.GetAsync(ApiBase);
+        var response = await _httpClient.GetAsync(_httpClient.BaseAddress);
         var returnMakes = new List<MakeListViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -34,7 +35,7 @@ public class MakeIntegration : IMakeIntegration
 
     public async Task<IEnumerable<MakeListViewModel>> GetMakesByCategoryIdAsync(int id)
     {
-        var response = await HttpClient.GetAsync(ApiBase + $"/byCategory/{id}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/byCategory/{id}");
         var returnMake = new List<MakeListViewModel>();
         if (response.IsSuccessStatusCode)
         {
@@ -50,7 +51,7 @@ public class MakeIntegration : IMakeIntegration
 
     public async Task<MakeListViewModel> GetMakeByIdAsync(int id)
     {
-        var response = await HttpClient.GetAsync(ApiBase + $"/{id}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{id}");
         var returnMake = new MakeListViewModel();
         if (response.IsSuccessStatusCode)
         {
@@ -66,7 +67,7 @@ public class MakeIntegration : IMakeIntegration
     
     public async Task<IEnumerable<DropdownViewModel>> GetMakesForDropdownsAsync(int categoryId = 0)
     {
-        var response = await HttpClient.GetAsync($"{ApiBase}/dropdowns/{categoryId}");
+        var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/dropdowns/{categoryId}");
         var returnMakes = new List<DropdownViewModel>(categoryId);
         if (response.IsSuccessStatusCode)
         {
@@ -94,7 +95,7 @@ public class MakeIntegration : IMakeIntegration
         using StringContent jsonContent =
             new StringContent(JsonConvert.SerializeObject(makeDto), Encoding.UTF8, "application/json");
 
-        var response = await HttpClient.PutAsync(ApiBase, jsonContent);
+        var response = await _httpClient.PutAsync(_httpClient.BaseAddress, jsonContent);
 
         var data = response.Content.ReadAsStringAsync().Result;
         var returnMake = JsonConvert.DeserializeObject<MakeListViewModel>(data);
@@ -107,6 +108,7 @@ public class MakeIntegration : IMakeIntegration
         var makeDto = new MakeDto()
         {
             Id = makeToAdd.Id,
+            CategoryId = makeToAdd.CategoryId,
             Name = makeToAdd.Name,
             Description = makeToAdd.Description,
             Status = makeToAdd.Status
@@ -115,7 +117,7 @@ public class MakeIntegration : IMakeIntegration
         using StringContent jsonContent =
             new StringContent(JsonConvert.SerializeObject(makeDto), Encoding.UTF8, "application/json");
 
-        var response = await HttpClient.PostAsync(ApiBase, jsonContent);
+        var response = await _httpClient.PostAsync(_httpClient.BaseAddress, jsonContent);
 
         var data = response.Content.ReadAsStringAsync().Result;
         var returnMake = JsonConvert.DeserializeObject<MakeListViewModel>(data);
@@ -125,6 +127,6 @@ public class MakeIntegration : IMakeIntegration
 
     public async Task DeleteMakeAsync(int id)
     {
-        await HttpClient.DeleteAsync(ApiBase + $"/{id}");
+        await _httpClient.DeleteAsync($"{_httpClient.BaseAddress}/{id}");
     }
 }

@@ -18,20 +18,20 @@
             </MudItem>
             <MudItem xs="12" Class="mt-5">
                 <MudGrid >
-                    <MudDataGrid Items="@Items">
+                    <MudDataGrid @ref="@_grid" Items="@Items">
                         <ToolBarContent>
                             <MudButton Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Add" Color="Color.Primary"
                                        Class="mb-5 ml-auto" OnClick="OnAdd">Add Item</MudButton>
                             <MudSpacer />
-                            <MudTextField @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                            <MudTextField T="string" @bind-Value="_searchText" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
                                           AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
                         </ToolBarContent>
                         <Columns>
                             <PropertyColumn Property="x => x.SerialNumber" Title="Serial Number" Filterable="true"/>
                             <PropertyColumn Property="x => x.TagId" Title="Tag Id" Filterable="true"/>
-                            <PropertyColumn Property="x => x.Name" Title="Description" Filterable="true"/>
-                            <PropertyColumn Property="x => x.Description" Title="Description"/>
-                            <PropertyColumn Property="x => x.Price" Format="C2" Title="Price"/>
+                            <PropertyColumn Property="x => x.Name" Title="Description" Filterable="false" />
+                            <PropertyColumn Property="x => x.Description" Title="Description" Filterable="false" />
+                            <PropertyColumn Property="x => x.Price" Format="C2" Title="Price" Filterable="false" />
                             <TemplateColumn Title="Availability">
                                 <CellTemplate>
                                     @if (context.Item.IsCheckedOut)
@@ -62,7 +62,7 @@
                         </Columns>
                         <PagerContent>
                             <div class="d-flex flex-column align-center">
-                            <MudPagination Color="Color.Primary" Count="4" @bind-Selected="@_selected"/>
+                                <MudPagination Color="Color.Primary" Count="@((_grid.GetFilteredItemsCount() + _grid.RowsPerPage - 1) / _grid.RowsPerPage)" @bind-Selected="@_selectedPage"/>
                             </div>
                         </PagerContent>
                     </MudDataGrid>

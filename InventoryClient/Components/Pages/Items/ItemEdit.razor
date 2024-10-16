@@ -36,7 +36,8 @@
                                     <MudDatePicker Label="Checkout Date" Disabled="!IsEdit" @bind-Date="ViewModel.CheckOutDate" Placeholder="Checkout Date"/>
                                     <MudDatePicker Label="Expected Return Date" Disabled="!IsEdit" @bind-Date="ViewModel.CheckInDate" Placeholder="Expected Return Date"/>
                                     <MudTextField Label="Check Out Location" HelperText="Location of item when checked out" HelperTextOnFocus="true"
-                                                  Disabled=@IsView   @bind-Value="ViewModel.CheckOutLocation" For="@(() => ViewModel.CheckOutLocation)"/>
+                                                  Disabled=@IsView   @bind-Value="ViewModel.Location" For="@(() => ViewModel.Location)"/>
+                                    
                                     @if (!IsView)
                                     {
                                         if (ViewModel.IsCheckedOut)
@@ -52,6 +53,8 @@
                                     }
 
                                 </MudCardContent>
+                                <MudTextField Label="Check out History"  ReadOnly="true" HelperTextOnFocus="true"
+                                              Disabled=@IsView   @bind-Value="ViewModel.History" For="@(() => ViewModel.History)"/>
                             </MudCard>
                         
 

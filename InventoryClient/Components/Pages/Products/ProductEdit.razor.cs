@@ -1,4 +1,3 @@
-using InventoryClient.Components.Dropdowns;
 using InventoryClient.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -17,8 +16,8 @@ public partial class ProductEdit : ComponentBase
 
     private ProductListViewModel ViewModel { get; set; } = new ProductListViewModel();
     private string _productPrompt = string.Empty;
-    private bool _isLoading = false;
-    public bool CategoryDisabled { get; set; } = true;
+    private bool _isLoading;
+    public bool CategoryDisabled { get; set; }
     public bool MakeDisabled { get; set; }
     public bool ModelDisabled { get; set; }
 
@@ -35,6 +34,7 @@ public partial class ProductEdit : ComponentBase
             ViewModel.MakeId = product.MakeId;
             ViewModel.ModelId = product.ModelId;
             ViewModel.Quantity = product.Quantity;
+            ViewModel.AvailableQuantity = product.AvailableQuantity;
             ViewModel.Price = product.Price;
             ViewModel.Notes = product.Notes;
 

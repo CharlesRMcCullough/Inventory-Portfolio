@@ -6,8 +6,11 @@ namespace InventoryClient.Components.Pages.Categories;
 
 public partial class CategoryList : ComponentBase
 {
-    private IEnumerable<CategoryListViewModel> Categories { get; set; }
-    private bool _isLoading = false;
+    private IEnumerable<CategoryListViewModel>? Categories { get; set; }
+    private bool _isLoading;
+    private string _searchText = string.Empty;
+    private int _selectedPage;
+    private MudDataGrid<CategoryListViewModel> _grid;
     
     protected override async Task OnInitializedAsync()
     {
