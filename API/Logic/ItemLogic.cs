@@ -1,3 +1,4 @@
+using System.Data;
 using API.Data;
 using API.DTOs;
 using API.Entities;
@@ -131,10 +132,9 @@ public class ItemLogic(InventoryDbContext context, IMapper mapper) : IItemLogic
     public async Task<ItemDto> CreateItemAsync(ItemDto itemDto)
     {
         var itemToCreate = mapper.Map<Item>(itemDto);
-        var createdItem = await context.Item.AddAsync(itemToCreate);
-        await context.SaveChangesAsync();
-        return mapper.Map<ItemDto>(createdItem.Entity);
-        
+            var createdItem = await context.Item.AddAsync(itemToCreate);
+            await context.SaveChangesAsync();
+            return mapper.Map<ItemDto>(createdItem.Entity);
     }
     
     public async Task<ItemDto> UpdateItemAsync(ItemDto itemDto)

@@ -20,14 +20,14 @@
                             SelectedIndex="@ViewModel.CategoryId"
                             OnCategoryChanged="OnCategoryChange"/>
                         <MakeDropdown
-                            Disabled="MakeDisabled  || IsView"
+                            Disabled="MakeDisabled || IsView"
                             Required="true"
                             Search="false"
                             CategoryId="@ViewModel.CategoryId"
                             SelectedIndex="@ViewModel.MakeId"
-                            OnMakeChanged="OnMakeChange" />
+                            OnMakeChanged="OnMakeChange"/>
                         <ModelDropdown
-                            Disabled="ModelDisabled  || IsView"
+                            Disabled="ModelDisabled || IsView"
                             Required="true"
                             Search="false"
                             MakeId="@ViewModel.MakeId"
@@ -37,17 +37,17 @@
                                       @bind-Value="ViewModel.Name" Disabled=@IsView For="@(() => ViewModel.Name)"/>
                         <MudTextField Label="Description" Disabled=@IsView HelperText="Model Description" HelperTextOnFocus="true"
                                       Class="mt-3 mb-5" @bind-Value="ViewModel.Description" For="@(() => ViewModel.Description)"/>
-
-                        <div class="d-flex justify-content-between">
-                                    <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Quantity" Label="Quantity" Variant="Variant.Text"
-                                                     HelperText="Product Quantity" HelperTextOnFocus="true" ReadOnly="true"/>
-                                    <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.AvailableQuantity" Label="Units Available" Variant="Variant.Text"
-                                                     HelperText="Units Available" HelperTextOnFocus="true" ReadOnly="true"/>
-                        </div>
-                        <MudTextField Label="Notes" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
-                                      Class="mt-3 mb-5" @bind-Value="ViewModel.Notes" For="@(() => ViewModel.Notes)"/>
                         @if (!IsAdd)
                         {
+                            <div class="d-flex justify-content-between">
+                                <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Quantity" Label="Quantity" Variant="Variant.Text"
+                                                 HelperText="Product Quantity" HelperTextOnFocus="true" ReadOnly="true"/>
+                                <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.AvailableQuantity" Label="Units Available" Variant="Variant.Text"
+                                                 HelperText="Units Available" HelperTextOnFocus="true" ReadOnly="true"/>
+                            </div>
+                            <MudTextField Label="Notes" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
+                                          Class="mt-3 mb-5" @bind-Value="ViewModel.Notes" For="@(() => ViewModel.Notes)"/>
+
                             <MudSelect @bind-Value="ViewModel.Status"
                                        Label="Status"
                                        Disabled="IsAdd || IsView"
@@ -68,7 +68,6 @@
                         {
                             <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
                         }
-
                     </MudCardActions>
                 </MudCard>
             </MudItem>

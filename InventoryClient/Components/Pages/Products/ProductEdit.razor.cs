@@ -89,6 +89,7 @@ public partial class ProductEdit : ComponentBase
         {
             _isLoading = true;
             ViewModel.Id = 0;
+            ViewModel.Status = true;
             await Integration.CreateProductAsync(ViewModel);
         }
         catch (Exception e)

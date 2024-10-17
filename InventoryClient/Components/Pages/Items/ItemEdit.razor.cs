@@ -10,6 +10,8 @@ public partial class ItemEdit : ComponentBase
     [Parameter] public int Id { get; set; }
 
     [Parameter] public int Mode { get; set; }
+    
+    [Parameter] public int ProductId { get; set; }
 
     private bool IsView => Mode == 0;
     private bool IsAdd => Mode == 2;

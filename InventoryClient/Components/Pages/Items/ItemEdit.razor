@@ -1,4 +1,4 @@
-@page "/ItemEdit/{id:int}/{mode:int}"
+@page "/ItemEdit/{id:int}/{mode:int}/{productId:int}"
 @using InventoryClient.Integrations.Interfaces
 @inject IItemIntegration Integration
 @inject NavigationManager Navigation
@@ -15,8 +15,8 @@
                         @if (!IsAdd)
                         {
                             <MudTextField Label="Name" HelperText="Model Name" HelperTextOnFocus="true"
-                                          @bind-Value="ViewModel.Name" Disabled="IsView || IsAdd" For="@(() => ViewModel.Name)"/>
-                            <MudTextField Label="Description" Disabled="IsView || IsAdd" HelperText="Model Description" HelperTextOnFocus="true"
+                                          @bind-Value="ViewModel.Name" Disabled="true" For="@(() => ViewModel.Name)"/>
+                            <MudTextField Label="Description" Disabled="true" HelperText="Model Description" HelperTextOnFocus="true"
                                           @bind-Value="ViewModel.Description" For="@(() => ViewModel.Description)"/>
                         }
                         <div class="d-flex justify-content-between">
@@ -27,17 +27,18 @@
                         </div>
                         <MudNumericField HideSpinButtons="true" @bind-Value="ViewModel.Price" Label="Price" Variant="Variant.Text"
                                          HelperText="Item Price" Disabled="@IsView"/>
-
+                        @if (!IsAdd)
+                        {
                             <MudCard Class="mt-5 mb-5" Outlined="true">
                                 <MudCardHeader>
                                     <MudText Typo="Typo.body1">Check out Item</MudText>
                                 </MudCardHeader>
-                                <MudCardContent>
+                                <MudCardContent >
                                     <MudDatePicker Label="Checkout Date" Disabled="!IsEdit" @bind-Date="ViewModel.CheckOutDate" Placeholder="Checkout Date"/>
                                     <MudDatePicker Label="Expected Return Date" Disabled="!IsEdit" @bind-Date="ViewModel.CheckInDate" Placeholder="Expected Return Date"/>
                                     <MudTextField Label="Check Out Location" HelperText="Location of item when checked out" HelperTextOnFocus="true"
-                                                  Disabled=@IsView   @bind-Value="ViewModel.Location" For="@(() => ViewModel.Location)"/>
-                                    
+                                                  Disabled=@IsView @bind-Value="ViewModel.Location" For="@(() => ViewModel.Location)"/>
+
                                     @if (!IsView)
                                     {
                                         if (ViewModel.IsCheckedOut)
@@ -53,10 +54,10 @@
                                     }
 
                                 </MudCardContent>
-                                <MudTextField Label="Check out History"  ReadOnly="true" HelperTextOnFocus="true"
-                                              Disabled=@IsView   @bind-Value="ViewModel.History" For="@(() => ViewModel.History)"/>
+                                <MudTextField Label="Check out History" ReadOnly="true" HelperTextOnFocus="true"
+                                              Disabled=@IsView @bind-Value="ViewModel.History" For="@(() => ViewModel.History)"/>
                             </MudCard>
-                        
+                        }
 
                         <MudTextField Label="Notes" Disabled=@IsView HelperText="Notes" HelperTextOnFocus="true"
                                       @bind-Value="ViewModel.Notes" For="@(() => ViewModel.Notes)"/>

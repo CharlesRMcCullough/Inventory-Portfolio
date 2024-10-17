@@ -94,15 +94,26 @@ public partial class ItemList : ComponentBase
 
     private void OnEdit(int id)
     {
-        Navigation.NavigateTo($"/ItemEdit/{id}/1");
+        if (_selectedProduct == 0)
+        {
+            Snackbar.Add($"Please select a product!", Severity.Error);
+            return;
+        }
+
+        Navigation.NavigateTo($"/ItemEdit/{id}/1/{_selectedProduct}");
     }
     private void OnView(int id)
     {
-        Navigation.NavigateTo($"/ItemEdit/{id}/0");
+        Navigation.NavigateTo($"/ItemEdit/{id}/0/{_selectedProduct}");
     }
 
     private void OnAdd()
     {
-        Navigation.NavigateTo($"/ItemEdit/{_selectedProduct}/2");
+        if (_selectedProduct == 0)
+        {
+            Snackbar.Add($"Please select a product!", Severity.Error);
+            return;
+        }
+        Navigation.NavigateTo($"/ItemEdit/{_selectedProduct}/2/{_selectedProduct}");
     }
 }
