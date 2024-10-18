@@ -36,7 +36,7 @@
                                 <CellTemplate>
                                     @if (context.Item.IsCheckedOut)
                                     {
-                                        <MudButton Variant="Variant.Text" Color="Color.Secondary"
+                                        <MudButton Variant="Variant.Text" Color="Color.Secondary" Size="Size.Small"
                                                    OnClick="() => OnEdit(context.Item.Id)">Check In</MudButton>
 
                                     }
@@ -50,13 +50,14 @@
                             <PropertyColumn Property="x => x.ExpectedReturnDate"  Title="Expected Return Date"/>
                             <TemplateColumn CellClass="d-flex justify-end">
                                 <CellTemplate>
-                                    <MudIconButton Size="@Size.Small" Class="mr-3"
+                                    <MudIconButton Size="@Size.Medium" Class="mr-3"
                                                    Icon="@Icons.Material.Outlined.Visibility"
                                                    OnClick="() => OnView(context.Item.Id)"/>
-                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit"
+                                    <MudIconButton Size="@Size.Medium" Icon="@Icons.Material.Outlined.Edit"
                                                    OnClick="() => OnEdit(context.Item.Id)"/>
-                                    <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Delete"
+                                    <MudIconButton Size="@Size.Medium" Icon="@Icons.Material.Outlined.Delete"
                                                    OnClick="(async () => await OnDeleteAsync(context.Item.Id))"/>
+
                                 </CellTemplate>
                             </TemplateColumn>
                         </Columns>
